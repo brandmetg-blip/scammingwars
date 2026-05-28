@@ -120,7 +120,6 @@ h1{
 .month input:focus{ outline:none; box-shadow:0 0 12px currentColor; }
 
 footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
-#yt-holder{ position:fixed; bottom:-300px; left:-300px; width:200px; height:150px; opacity:0; pointer-events:none; }
 </style>
 </head>
 <body>
@@ -141,7 +140,7 @@ footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
   <footer>shared live scoreboard · everyone sees the same numbers · auto-syncs every few seconds 📈</footer>
 </div>
 
-<div id="yt-holder"><div id="yt-player"></div></div>
+<audio id="bgMusic" src="bgmusic.mp3" loop preload="auto"></audio>
 <audio id="firstSound" src="first.mp3" preload="auto"></audio>
 
 <script>
@@ -169,7 +168,6 @@ const MONTHS = ['June','July','August'];
 const LEAD_HYPE = ['👑 ON TOP. UNTOUCHABLE','💎 GOATED fr','🚀 sigma grindset','🔥 cooking the opps'];
 const LOSE_HYPE = ['💀 it\'s so over','🤡 down bad','🪦 L + ratio','😭 lock in gng'];
 const TIE_HYPE  = ['😳 dead even...','🤝 nobody eating yet'];
-const BG_VIDEO_ID = 'vHSNZK4Je-Y';
 
 const RE = ['💸','🤑','💵','📈','🪙','💰','🔥','💎'];
 const rain = document.getElementById('rain');
@@ -228,21 +226,24 @@ const fmt = n => '$'+ (n||0).toLocaleString('en-US');
 const memberTotal = id => data[id].reduce((a,b)=>a+(+b||0),0);
 const teamTotal = side => TEAMS[side].members.reduce((s,m)=>s+memberTotal(m.id),0);
 
-/* ---------- YouTube background music ---------- */
-let ytPlayer=null, ytReady=false, musicOn=false;
-function onYouTubeIframeAPIReady(){
-  ytPlayer = new YT.Player('yt-player', {
-    videoId: BG_VIDEO_ID,
-    playerVars:{ autoplay:0, controls:0, loop:1, playlist:BG_VIDEO_ID, modestbranding:1, rel:0 },
-    events:{ onReady:()=>{ytReady=true;}, onStateChange:(e)=>{ if(e.data===YT.PlayerState.ENDED && ytPlayer){ytPlayer.playVideo();} } }
-  });
-}
-(function loadYT(){ const tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; document.head.appendChild(tag); })();
+/* ---------- local mp3 background music ---------- */
+let musicOn=false;
 function toggleMusic(){
   const btn=document.getElementById('musicbtn');
-  if(!ytReady||!ytPlayer){ btn.textContent='⏳ loading music...'; return; }
-  if(musicOn){ ytPlayer.pauseVideo(); musicOn=false; btn.classList.remove('on'); btn.textContent='🔇 music off'; }
-  else{ ytPlayer.unMute(); ytPlayer.setVolume(45); ytPlayer.playVideo(); musicOn=true; btn.classList.add('on'); btn.textContent='🔊 vibe playing — hava nagila'; }
+  const audio=document.getElementById('bgMusic');
+  if(musicOn){
+    audio.pause();
+    musicOn=false;
+    btn.classList.remove('on');
+    btn.textContent='🔇 music off';
+  }else{
+    audio.volume=0.45;
+    audio.play().then(()=>{
+      musicOn=true;
+      btn.classList.add('on');
+      btn.textContent='🔊 vibe playing';
+    }).catch(()=>{ btn.textContent='⚠ couldn\'t play (check background.mp3)'; });
+  }
 }
 
 /* ---------- build inputs ---------- */
