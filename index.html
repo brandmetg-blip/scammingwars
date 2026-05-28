@@ -58,6 +58,12 @@ h1{
 .sub{ font-size:13px; letter-spacing:3px; margin-top:8px; opacity:.7; text-transform:uppercase; }
 .sub b{ color:var(--teamB); }
 
+/* sync status pill */
+.sync{ display:inline-block; margin-top:10px; font-size:11px; letter-spacing:1px; padding:5px 14px; border-radius:99px; border:1px solid #444; opacity:.85; }
+.sync.ok{ border-color:#00f5d4; color:#00f5d4; }
+.sync.err{ border-color:var(--teamA); color:var(--teamA); }
+.sync.saving{ border-color:var(--teamB); color:var(--teamB); }
+
 .musicbtn{
   display:inline-flex; align-items:center; gap:8px; margin:14px auto 0; cursor:pointer;
   padding:10px 20px; border-radius:99px; border:2px solid var(--teamB); background:#000;
@@ -68,7 +74,6 @@ h1{
 .musicbtn.on{ border-color:#00f5d4; color:#00f5d4; }
 .musicbtn.on:hover{ box-shadow:0 0 18px #00f5d4; }
 
-/* VS battle arena */
 .arena{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin:34px 0 10px; }
 .fighter{
   text-align:center; padding:20px 12px; border-radius:18px; border:3px solid;
@@ -86,7 +91,6 @@ h1{
 .vs{ font-family:'Bungee'; font-size:clamp(26px,7vw,46px); color:#fff; text-shadow:0 0 20px var(--teamA),0 0 30px var(--teamB); animation:vspulse 1.4s ease-in-out infinite; }
 @keyframes vspulse{ 50%{ transform:scale(1.12); } }
 
-/* tug-of-war share bar */
 .tug{ height:18px; border-radius:99px; overflow:hidden; display:flex; border:2px solid #000; margin:6px 0 30px; box-shadow:0 0 0 1px rgba(255,255,255,.1); }
 .tug .a{ background:var(--teamA); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
 .tug .b{ background:var(--teamB); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
@@ -125,6 +129,8 @@ footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
   <header>
     <h1>SCAM WARS · 2v2</h1>
     <div class="sub">summer showdown · <b>jun → jul → aug</b> · last team standing eats 🤑</div>
+    <div><span class="sync" id="sync">connecting…</span></div>
+    <button class="musicbtn" id="musicbtn" onclick="toggleMusic()">🔇 tap to start the vibe</button>
   </header>
 
   <div class="arena" id="arena"></div>
@@ -132,13 +138,23 @@ footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
 
   <div id="teams"></div>
 
-  <footer>each player types their cash per month. teams auto-combine & save. no cap. 📈</footer>
+  <footer>shared live scoreboard · everyone sees the same numbers · auto-syncs every few seconds 📈</footer>
 </div>
 
 <div id="yt-holder"><div id="yt-player"></div></div>
 <audio id="firstSound" src="first.mp3" preload="auto"></audio>
 
 <script>
+/* ============================================================
+   JSONBIN SHARED STORAGE  — FILL THESE TWO IN  (see chat instructions)
+   ============================================================ */
+const JSONBIN_BIN_ID  = "6a18597521f9ee59d295b48b";
+const JSONBIN_API_KEY = "$2a$10$wUL5vHPci5ylelUPqniAi.03JVw.StV/nmHsQvIlSaWTCvi6L161e";
+/* ============================================================ */
+
+const BIN_URL = "https://api.jsonbin.io/v3/b/" + JSONBIN_BIN_ID;
+const HEADERS = { "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY };
+
 const TEAMS = {
   A: { side:'A', name:'Lazic / Velja',  emoji:'🐺🐉', members:[
         { id:'lazic', name:'Lazic', emoji:'🐺' },
@@ -153,7 +169,6 @@ const MONTHS = ['June','July','August'];
 const LEAD_HYPE = ['👑 ON TOP. UNTOUCHABLE','💎 GOATED fr','🚀 sigma grindset','🔥 cooking the opps'];
 const LOSE_HYPE = ['💀 it\'s so over','🤡 down bad','🪦 L + ratio','😭 lock in gng'];
 const TIE_HYPE  = ['😳 dead even...','🤝 nobody eating yet'];
-const STORAGE_KEY = 'moneywars_2v2';
 const BG_VIDEO_ID = 'vHSNZK4Je-Y';
 
 const RE = ['💸','🤑','💵','📈','🪙','💰','🔥','💎'];
@@ -168,20 +183,46 @@ for(let i=0;i<22;i++){
   rain.appendChild(s);
 }
 
-let data = {}; // per-member arrays
+let data = {};
 Object.values(TEAMS).forEach(t=> t.members.forEach(m=> data[m.id]=[0,0,0]));
 let currentLeader = null;
+let activeInput = null;   // don't overwrite a field the user is typing in
+let saveTimer = null;
 
-function load(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw){
-      const parsed = JSON.parse(raw);
-      Object.keys(data).forEach(id=>{ if(Array.isArray(parsed[id])) data[id]=parsed[id]; });
-    }
-  }catch(e){}
+function setSync(state, msg){
+  const el=document.getElementById('sync');
+  el.className='sync '+(state||'');
+  el.textContent=msg;
 }
-function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){} }
+
+/* ---------- shared cloud storage ---------- */
+async function cloudLoad(){
+  if(JSONBIN_BIN_ID.startsWith("PASTE")){ setSync('err','⚠ not configured — see setup'); return; }
+  try{
+    const r = await fetch(BIN_URL+"/latest", { headers: HEADERS });
+    if(!r.ok) throw new Error(r.status);
+    const j = await r.json();
+    const rec = j.record || {};
+    Object.keys(data).forEach(id=>{ if(Array.isArray(rec[id])) data[id]=rec[id]; });
+    setSync('ok','🟢 live & synced');
+    refreshInputs(); render();
+  }catch(e){ setSync('err','🔴 sync error (retrying)'); }
+}
+
+async function cloudSave(){
+  if(JSONBIN_BIN_ID.startsWith("PASTE")){ return; }
+  setSync('saving','💾 saving…');
+  try{
+    const r = await fetch(BIN_URL, { method:"PUT", headers:HEADERS, body:JSON.stringify(data) });
+    if(!r.ok) throw new Error(r.status);
+    setSync('ok','🟢 live & synced');
+  }catch(e){ setSync('err','🔴 save failed'); }
+}
+
+function queueSave(){
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(cloudSave, 700); // debounce typing
+}
 
 const fmt = n => '$'+ (n||0).toLocaleString('en-US');
 const memberTotal = id => data[id].reduce((a,b)=>a+(+b||0),0);
@@ -225,8 +266,10 @@ function buildTeams(){
           ${MONTHS.map((mo,i)=>`
             <div class="month">
               <label>${mo}</label>
-              <input type="number" inputmode="numeric" placeholder="0"
+              <input type="number" inputmode="numeric" placeholder="0" id="in-${m.id}-${i}"
                 value="${data[m.id][i]||''}"
+                onfocus="activeInput='${m.id}-${i}'"
+                onblur="activeInput=null"
                 oninput="edit('${m.id}',${i},this.value)">
             </div>`).join('')}
         </div>`;
@@ -236,10 +279,22 @@ function buildTeams(){
   });
 }
 
+// update field values from cloud without disturbing the one being typed in
+function refreshInputs(){
+  Object.keys(data).forEach(id=>{
+    for(let i=0;i<3;i++){
+      const el=document.getElementById('in-'+id+'-'+i);
+      if(el && activeInput!==id+'-'+i){ el.value = data[id][i]||''; }
+    }
+    const tot=document.getElementById('tot-'+id);
+    if(tot) tot.textContent=fmt(memberTotal(id));
+  });
+}
+
 function edit(id,i,v){
   data[id][i]= v===''?0:Math.max(0,+v);
   document.getElementById('tot-'+id).textContent=fmt(memberTotal(id));
-  render(); save();
+  render(); queueSave();
 }
 
 function playFirstSting(){
@@ -294,18 +349,9 @@ function fighter(side,totals,leader){
   return d;
 }
 
-load(); buildTeams(); render();
-</script>
-<button onclick="playMusic()">Play Music</button>
-
-<audio id="bgMusic" loop>
-  <source src="bgmusic.mp3" type="audio/mpeg">
-</audio>
-
-<script>
-function playMusic() {
-  document.getElementById("bgMusic").play();
-}
+buildTeams(); render();
+cloudLoad();
+setInterval(cloudLoad, 5000); // poll for others' updates every 5s
 </script>
 </body>
 </html>
