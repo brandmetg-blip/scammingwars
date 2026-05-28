@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>💸 SCAM WARS: 2v2 SUMMER EDITION 💸</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap');
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+:root{
+  --teamA:#ff2e63;
+  --teamB:#ffd93d;
+  --bg:#0a0a14;
+}
+
+body{
+  font-family:'Space Mono',monospace;
+  background:var(--bg);
+  color:#fff;
+  min-height:100vh;
+  overflow-x:hidden;
+  position:relative;
+}
+
+body::before{
+  content:"";
+  position:fixed; inset:0;
+  background:
+    radial-gradient(circle at 18% 30%, rgba(255,46,99,.16), transparent 42%),
+    radial-gradient(circle at 82% 30%, rgba(255,217,61,.14), transparent 42%),
+    radial-gradient(circle at 50% 85%, rgba(0,245,212,.10), transparent 45%);
+  z-index:-2;
+  animation:bgmove 12s ease-in-out infinite alternate;
+}
+@keyframes bgmove{ to{ transform:scale(1.3) rotate(5deg); } }
+
+.rain{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
+.rain span{ position:absolute; top:-50px; font-size:28px; animation:fall linear infinite; opacity:.5; }
+@keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); } }
+
+.wrap{ max-width:900px; margin:0 auto; padding:24px 16px 80px; position:relative; z-index:1; }
+
+header{ text-align:center; margin-bottom:18px; }
+h1{
+  font-family:'Bungee',cursive;
+  font-size:clamp(26px,7.5vw,58px);
+  line-height:.95;
+  background:linear-gradient(90deg,var(--teamA),#fff,var(--teamB),var(--teamA));
+  background-size:300% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:shine 4s linear infinite;
+  filter:drop-shadow(3px 3px 0 #000);
+}
+@keyframes shine{ to{ background-position:300% 0; } }
+.sub{ font-size:13px; letter-spacing:3px; margin-top:8px; opacity:.7; text-transform:uppercase; }
+.sub b{ color:var(--teamB); }
+
+.musicbtn{
+  display:inline-flex; align-items:center; gap:8px; margin:14px auto 0; cursor:pointer;
+  padding:10px 20px; border-radius:99px; border:2px solid var(--teamB); background:#000;
+  color:var(--teamB); font-family:'Space Mono'; font-weight:700; letter-spacing:1px;
+  font-size:13px; transition:.2s; text-transform:uppercase;
+}
+.musicbtn:hover{ box-shadow:0 0 18px var(--teamB); transform:scale(1.05); }
+.musicbtn.on{ border-color:#00f5d4; color:#00f5d4; }
+.musicbtn.on:hover{ box-shadow:0 0 18px #00f5d4; }
+
+/* VS battle arena */
+.arena{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin:34px 0 10px; }
+.fighter{
+  text-align:center; padding:20px 12px; border-radius:18px; border:3px solid;
+  position:relative; transition:.5s cubic-bezier(.2,1.4,.5,1); background:rgba(255,255,255,.03);
+}
+.fighter.A{ border-color:var(--teamA); color:var(--teamA); }
+.fighter.B{ border-color:var(--teamB); color:var(--teamB); }
+.fighter.lead{ box-shadow:0 0 50px -8px currentColor, inset 0 0 34px rgba(255,255,255,.08); transform:scale(1.04); }
+.fighter.justwon{ animation:pop .6s cubic-bezier(.2,1.6,.4,1); }
+@keyframes pop{ 0%{transform:scale(1.04);} 40%{transform:scale(1.15) rotate(-2deg);} 100%{transform:scale(1.04);} }
+.fighter .crown{ font-size:30px; height:34px; }
+.fighter .fname{ font-family:'Archivo Black'; font-size:18px; color:#fff; text-transform:uppercase; margin-top:4px; word-break:break-word; }
+.fighter .fcash{ font-family:'Bungee'; font-size:30px; margin-top:8px; text-shadow:0 0 16px currentColor; }
+.fighter .ftag{ font-size:11px; font-weight:700; margin-top:8px; min-height:14px; color:#fff; opacity:.85; }
+.vs{ font-family:'Bungee'; font-size:clamp(26px,7vw,46px); color:#fff; text-shadow:0 0 20px var(--teamA),0 0 30px var(--teamB); animation:vspulse 1.4s ease-in-out infinite; }
+@keyframes vspulse{ 50%{ transform:scale(1.12); } }
+
+/* tug-of-war share bar */
+.tug{ height:18px; border-radius:99px; overflow:hidden; display:flex; border:2px solid #000; margin:6px 0 30px; box-shadow:0 0 0 1px rgba(255,255,255,.1); }
+.tug .a{ background:var(--teamA); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
+.tug .b{ background:var(--teamB); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
+
+.team-block{ margin-bottom:16px; }
+.team-block > .label{ font-family:'Archivo Black'; font-size:13px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; opacity:.8; }
+.team-block.A > .label{ color:var(--teamA); }
+.team-block.B > .label{ color:var(--teamB); }
+
+.card{
+  border:3px solid; border-radius:16px; padding:16px; margin-bottom:12px;
+  background:rgba(255,255,255,.03); backdrop-filter:blur(4px);
+  position:relative; overflow:hidden;
+}
+.card::after{ content:""; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%; background:currentColor; opacity:.12; filter:blur(20px); }
+.card.A{ border-color:var(--teamA); color:var(--teamA); }
+.card.B{ border-color:var(--teamB); color:var(--teamB); }
+.chead{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+.chead .nm{ font-family:'Archivo Black'; font-size:18px; text-transform:uppercase; }
+.total{ font-family:'Bungee'; font-size:22px; color:#fff; text-shadow:0 0 14px currentColor; }
+.months{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
+.month label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; opacity:.8; }
+.month input{
+  width:100%; padding:8px; border-radius:8px; border:2px solid currentColor;
+  background:#000; color:#fff; font-family:'Space Mono'; font-weight:700; font-size:14px; text-align:center;
+}
+.month input:focus{ outline:none; box-shadow:0 0 12px currentColor; }
+
+footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
+#yt-holder{ position:fixed; bottom:-300px; left:-300px; width:200px; height:150px; opacity:0; pointer-events:none; }
+</style>
+</head>
+<body>
+<div class="rain" id="rain"></div>
+<div class="wrap">
+  <header>
+    <h1>SCAM WARS · 2v2</h1>
+    <div class="sub">summer showdown · <b>jun → jul → aug</b> · last team standing eats 🤑</div>
+  </header>
+
+  <div class="arena" id="arena"></div>
+  <div class="tug"><div class="a" id="tug-a"></div><div class="b" id="tug-b"></div></div>
+
+  <div id="teams"></div>
+
+  <footer>each player types their cash per month. teams auto-combine & save. no cap. 📈</footer>
+</div>
+
+<div id="yt-holder"><div id="yt-player"></div></div>
+<audio id="firstSound" src="first.mp3" preload="auto"></audio>
+
+<script>
+const TEAMS = {
+  A: { side:'A', name:'Lazic / Velja',  emoji:'🐺🐉', members:[
+        { id:'lazic', name:'Lazic', emoji:'🐺' },
+        { id:'velja', name:'Velja', emoji:'🐉' },
+      ]},
+  B: { side:'B', name:'Dusan / David', emoji:'👑', members:[
+        { id:'dusan', name:'Dusan', emoji:'👑' },
+        { id:'david', name:'David', emoji:'🤴' },
+      ]},
+};
+const MONTHS = ['June','July','August'];
+const LEAD_HYPE = ['👑 ON TOP. UNTOUCHABLE','💎 GOATED fr','🚀 sigma grindset','🔥 cooking the opps'];
+const LOSE_HYPE = ['💀 it\'s so over','🤡 down bad','🪦 L + ratio','😭 lock in gng'];
+const TIE_HYPE  = ['😳 dead even...','🤝 nobody eating yet'];
+const STORAGE_KEY = 'moneywars_2v2';
+const BG_VIDEO_ID = 'vHSNZK4Je-Y';
+
+const RE = ['💸','🤑','💵','📈','🪙','💰','🔥','💎'];
+const rain = document.getElementById('rain');
+for(let i=0;i<22;i++){
+  const s=document.createElement('span');
+  s.textContent=RE[i%RE.length];
+  s.style.left=Math.random()*100+'%';
+  s.style.animationDuration=(6+Math.random()*8)+'s';
+  s.style.animationDelay=(-Math.random()*10)+'s';
+  s.style.fontSize=(18+Math.random()*26)+'px';
+  rain.appendChild(s);
+}
+
+let data = {}; // per-member arrays
+Object.values(TEAMS).forEach(t=> t.members.forEach(m=> data[m.id]=[0,0,0]));
+let currentLeader = null;
+
+function load(){
+  try{
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      const parsed = JSON.parse(raw);
+      Object.keys(data).forEach(id=>{ if(Array.isArray(parsed[id])) data[id]=parsed[id]; });
+    }
+  }catch(e){}
+}
+function save(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }catch(e){} }
+
+const fmt = n => '$'+ (n||0).toLocaleString('en-US');
+const memberTotal = id => data[id].reduce((a,b)=>a+(+b||0),0);
+const teamTotal = side => TEAMS[side].members.reduce((s,m)=>s+memberTotal(m.id),0);
+
+/* ---------- YouTube background music ---------- */
+let ytPlayer=null, ytReady=false, musicOn=false;
+function onYouTubeIframeAPIReady(){
+  ytPlayer = new YT.Player('yt-player', {
+    videoId: BG_VIDEO_ID,
+    playerVars:{ autoplay:0, controls:0, loop:1, playlist:BG_VIDEO_ID, modestbranding:1, rel:0 },
+    events:{ onReady:()=>{ytReady=true;}, onStateChange:(e)=>{ if(e.data===YT.PlayerState.ENDED && ytPlayer){ytPlayer.playVideo();} } }
+  });
+}
+(function loadYT(){ const tag=document.createElement('script'); tag.src="https://www.youtube.com/iframe_api"; document.head.appendChild(tag); })();
+function toggleMusic(){
+  const btn=document.getElementById('musicbtn');
+  if(!ytReady||!ytPlayer){ btn.textContent='⏳ loading music...'; return; }
+  if(musicOn){ ytPlayer.pauseVideo(); musicOn=false; btn.classList.remove('on'); btn.textContent='🔇 music off'; }
+  else{ ytPlayer.unMute(); ytPlayer.setVolume(45); ytPlayer.playVideo(); musicOn=true; btn.classList.add('on'); btn.textContent='🔊 vibe playing — hava nagila'; }
+}
+
+/* ---------- build inputs ---------- */
+function buildTeams(){
+  const wrap=document.getElementById('teams');
+  wrap.innerHTML='';
+  ['A','B'].forEach(side=>{
+    const t=TEAMS[side];
+    const block=document.createElement('div');
+    block.className='team-block '+side;
+    block.innerHTML=`<div class="label">${t.emoji} Team ${t.name}</div>`;
+    t.members.forEach(m=>{
+      const c=document.createElement('div');
+      c.className='card '+side;
+      c.innerHTML=`
+        <div class="chead">
+          <span class="nm">${m.emoji} ${m.name}</span>
+          <span class="total" id="tot-${m.id}">${fmt(memberTotal(m.id))}</span>
+        </div>
+        <div class="months">
+          ${MONTHS.map((mo,i)=>`
+            <div class="month">
+              <label>${mo}</label>
+              <input type="number" inputmode="numeric" placeholder="0"
+                value="${data[m.id][i]||''}"
+                oninput="edit('${m.id}',${i},this.value)">
+            </div>`).join('')}
+        </div>`;
+      block.appendChild(c);
+    });
+    wrap.appendChild(block);
+  });
+}
+
+function edit(id,i,v){
+  data[id][i]= v===''?0:Math.max(0,+v);
+  document.getElementById('tot-'+id).textContent=fmt(memberTotal(id));
+  render(); save();
+}
+
+function playFirstSting(){
+  const a=document.getElementById('firstSound'); if(!a) return;
+  try{ a.currentTime=0; a.volume=0.8; a.play().catch(()=>{}); }catch(e){}
+}
+
+let flashSide=null;
+function render(){
+  const a=teamTotal('A'), b=teamTotal('B'), sum=a+b;
+  document.getElementById('tug-a').style.width=(sum? a/sum*100:50)+'%';
+  document.getElementById('tug-b').style.width=(sum? b/sum*100:50)+'%';
+
+  let leader=null;
+  if(sum>0 && a!==b) leader = a>b ? 'A':'B';
+
+  if(leader && leader!==currentLeader){
+    const firstEver = currentLeader===null;
+    currentLeader=leader;
+    if(!firstEver){ playFirstSting(); flashSide=leader; setTimeout(()=>{flashSide=null; buildArena(a,b,leader);},700); }
+  }else if(!leader){ currentLeader=null; }
+
+  buildArena(a,b,leader);
+}
+
+function buildArena(a,b,leader){
+  const arena=document.getElementById('arena');
+  const totals={A:a,B:b};
+  arena.innerHTML='';
+  const fA=fighter('A',totals,leader);
+  const vs=document.createElement('div'); vs.className='vs'; vs.textContent='VS';
+  const fB=fighter('B',totals,leader);
+  arena.append(fA,vs,fB);
+}
+
+function fighter(side,totals,leader){
+  const t=TEAMS[side];
+  const isLead = leader===side;
+  const sum=totals.A+totals.B;
+  let tag;
+  if(sum===0) tag=TIE_HYPE[1];
+  else if(totals.A===totals.B) tag=TIE_HYPE[0];
+  else tag = isLead ? LEAD_HYPE[totals[side]%LEAD_HYPE.length] : LOSE_HYPE[totals[side]%LOSE_HYPE.length];
+
+  const d=document.createElement('div');
+  d.className='fighter '+side+(isLead?' lead':'')+(flashSide===side?' justwon':'');
+  d.innerHTML=`
+    <div class="crown">${isLead?'👑':''}</div>
+    <div class="fname">${t.emoji}<br>${t.name}</div>
+    <div class="fcash">${fmt(totals[side])}</div>
+    <div class="ftag">${tag}</div>`;
+  return d;
+}
+
+load(); buildTeams(); render();
+</script>
+<button onclick="playMusic()">Play Music</button>
+
+<audio id="bgMusic" loop>
+  <source src="bgmusic.mp3" type="audio/mpeg">
+</audio>
+
+<script>
+function playMusic() {
+  document.getElementById("bgMusic").play();
+}
+</script>
+</body>
+</html>
