@@ -313,6 +313,71 @@ html, body {
 .input-month.C input:focus { border-color: var(--c); box-shadow: 0 0 0 3px var(--c-dim); }
 .input-month input::placeholder { color: var(--muted); opacity: .6; }
 
+/* prize pool */
+.prize-pool {
+  position: relative;
+  margin: 0 0 44px;
+  border-radius: 24px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 24px 32px;
+  background: linear-gradient(135deg, #1a1508 0%, #0e0f11 60%);
+  border: 1px solid rgba(240,180,41,.25);
+  box-shadow:
+    0 0 0 1px rgba(240,180,41,.08),
+    0 8px 40px rgba(240,180,41,.12),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.prize-pool::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 24px;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(240,180,41,.18), transparent 70%);
+  pointer-events: none;
+}
+.prize-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(240,180,41,.6);
+  margin-bottom: 6px; position: relative; z-index: 1;
+}
+.prize-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 10vw, 82px);
+  font-weight: 700; line-height: 1;
+  background: linear-gradient(180deg, #ffe87c 0%, #f0b429 40%, #c87d0e 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(240,180,41,.4));
+  position: relative; z-index: 1;
+  animation: prizeglow 3s ease-in-out infinite alternate;
+}
+@keyframes prizeglow {
+  from { filter: drop-shadow(0 2px 12px rgba(240,180,41,.3)); }
+  to   { filter: drop-shadow(0 4px 28px rgba(240,180,41,.7)); }
+}
+.prize-sub {
+  font-size: 12px; color: rgba(240,180,41,.5); letter-spacing: 2px;
+  text-transform: uppercase; margin-top: 8px; position: relative; z-index: 1;
+}
+/* coin pile SVGs */
+.coins-left, .coins-right {
+  position: absolute; bottom: -12px;
+  pointer-events: none; z-index: 2;
+}
+.coins-left  { left:  -10px; }
+.coins-right { right: -10px; transform: scaleX(-1); }
+/* floating sparkles */
+.sparkle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: sparklefly linear infinite;
+  background: radial-gradient(circle, #ffe87c, transparent);
+}
+@keyframes sparklefly {
+  0%   { transform: translateY(0) scale(1); opacity: .8; }
+  100% { transform: translateY(-60px) scale(0); opacity: 0; }
+}
+
 /* toast */
 .toast {
   position: fixed; bottom: 28px; left: 50%;
@@ -346,6 +411,85 @@ html, body {
 <!-- ═══ DISPLAY PAGE ═══ -->
 <div class="page active" id="page-display">
   <div class="display-wrap">
+    <div class="prize-pool" id="prize-pool">
+      <!-- coin piles -->
+      <div class="coins-left">
+        <svg width="140" height="120" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- back coins -->
+          <ellipse cx="55" cy="96" rx="38" ry="11" fill="#7a4a00" opacity=".6"/>
+          <rect x="17" y="62" width="76" height="34" rx="2" fill="url(#cg1)"/>
+          <ellipse cx="55" cy="62" rx="38" ry="11" fill="url(#cgt)"/>
+          <!-- mid stack -->
+          <ellipse cx="42" cy="80" rx="30" ry="9" fill="#6a3e00" opacity=".5"/>
+          <rect x="12" y="50" width="60" height="30" rx="2" fill="url(#cg2)"/>
+          <ellipse cx="42" cy="50" rx="30" ry="9" fill="url(#cgt2)"/>
+          <!-- front small -->
+          <ellipse cx="68" cy="86" rx="22" ry="7" fill="#5c3400" opacity=".5"/>
+          <rect x="46" y="60" width="44" height="26" rx="2" fill="url(#cg3)"/>
+          <ellipse cx="68" cy="60" rx="22" ry="7" fill="url(#cgt3)"/>
+          <!-- bag of money -->
+          <ellipse cx="105" cy="92" rx="26" ry="10" fill="#3a2800" opacity=".7"/>
+          <path d="M82 60 Q79 92 105 92 Q131 92 128 60 Q120 44 105 44 Q90 44 82 60Z" fill="url(#baggrad)"/>
+          <path d="M97 44 Q105 38 113 44" stroke="#c87d0e" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <ellipse cx="105" cy="44" rx="10" ry="4" fill="url(#bagknot)"/>
+          <text x="105" y="78" font-size="18" text-anchor="middle" fill="rgba(255,220,80,.9)">$</text>
+          <!-- shine on bag -->
+          <ellipse cx="96" cy="60" rx="7" ry="10" fill="white" opacity=".12" transform="rotate(-15 96 60)"/>
+          <!-- coin edges detail -->
+          <line x1="17" y1="66" x2="93" y2="66" stroke="#f0b429" stroke-width=".5" opacity=".3"/>
+          <line x1="17" y1="70" x2="93" y2="70" stroke="#f0b429" stroke-width=".5" opacity=".2"/>
+          <line x1="17" y1="74" x2="93" y2="74" stroke="#f0b429" stroke-width=".5" opacity=".15"/>
+          <defs>
+            <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+            <linearGradient id="cgt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff5a0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd84a"/><stop offset="100%" stop-color="#b06a00"/></linearGradient>
+            <linearGradient id="cgt2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#e09a20"/></linearGradient>
+            <linearGradient id="cg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffed90"/><stop offset="100%" stop-color="#d48c10"/></linearGradient>
+            <linearGradient id="cgt3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7b0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="baggrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0b429"/><stop offset="50%" stop-color="#c87d0e"/><stop offset="100%" stop-color="#7a4a00"/></linearGradient>
+            <linearGradient id="bagknot" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="coins-right">
+        <svg width="140" height="120" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="55" cy="96" rx="38" ry="11" fill="#7a4a00" opacity=".6"/>
+          <rect x="17" y="62" width="76" height="34" rx="2" fill="url(#cg1r)"/>
+          <ellipse cx="55" cy="62" rx="38" ry="11" fill="url(#cgtr)"/>
+          <ellipse cx="42" cy="80" rx="30" ry="9" fill="#6a3e00" opacity=".5"/>
+          <rect x="12" y="50" width="60" height="30" rx="2" fill="url(#cg2r)"/>
+          <ellipse cx="42" cy="50" rx="30" ry="9" fill="url(#cgt2r)"/>
+          <ellipse cx="68" cy="86" rx="22" ry="7" fill="#5c3400" opacity=".5"/>
+          <rect x="46" y="60" width="44" height="26" rx="2" fill="url(#cg3r)"/>
+          <ellipse cx="68" cy="60" rx="22" ry="7" fill="url(#cgt3r)"/>
+          <ellipse cx="105" cy="92" rx="26" ry="10" fill="#3a2800" opacity=".7"/>
+          <path d="M82 60 Q79 92 105 92 Q131 92 128 60 Q120 44 105 44 Q90 44 82 60Z" fill="url(#bagg2)"/>
+          <path d="M97 44 Q105 38 113 44" stroke="#c87d0e" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <ellipse cx="105" cy="44" rx="10" ry="4" fill="url(#bagknot2)"/>
+          <text x="105" y="78" font-size="18" text-anchor="middle" fill="rgba(255,220,80,.9)">$</text>
+          <ellipse cx="96" cy="60" rx="7" ry="10" fill="white" opacity=".12" transform="rotate(-15 96 60)"/>
+          <line x1="17" y1="66" x2="93" y2="66" stroke="#f0b429" stroke-width=".5" opacity=".3"/>
+          <line x1="17" y1="70" x2="93" y2="70" stroke="#f0b429" stroke-width=".5" opacity=".2"/>
+          <line x1="17" y1="74" x2="93" y2="74" stroke="#f0b429" stroke-width=".5" opacity=".15"/>
+          <defs>
+            <linearGradient id="cg1r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+            <linearGradient id="cgtr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff5a0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="cg2r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd84a"/><stop offset="100%" stop-color="#b06a00"/></linearGradient>
+            <linearGradient id="cgt2r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#e09a20"/></linearGradient>
+            <linearGradient id="cg3r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffed90"/><stop offset="100%" stop-color="#d48c10"/></linearGradient>
+            <linearGradient id="cgt3r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7b0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="bagg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0b429"/><stop offset="50%" stop-color="#c87d0e"/><stop offset="100%" stop-color="#7a4a00"/></linearGradient>
+            <linearGradient id="bagknot2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="prize-label">🏆 Summer Prize Pool</div>
+      <div class="prize-amount">$5,000</div>
+      <div class="prize-sub">Winner takes all · Last team standing eats</div>
+    </div>
+
     <div class="headline">
       <h1>Scam <em>Wars</em></h1>
       <p>June · July · August · 2025</p>
@@ -682,6 +826,19 @@ function buildBreakdown(totals) {
     });
   });
 }
+
+// ── prize pool sparkles
+function spawnSparkle() {
+  const pool = document.getElementById('prize-pool');
+  if (!pool) return;
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  const size = 3 + Math.random() * 6;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${10+Math.random()*80}%;bottom:${10+Math.random()*40}%;animation-duration:${1.8+Math.random()*2.2}s`;
+  pool.appendChild(s);
+  setTimeout(() => s.remove(), 4000);
+}
+setInterval(spawnSparkle, 300);
 
 // ── init
 buildInputPage();
