@@ -3,356 +3,691 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>💸 SCAM WARS: 2v2 SUMMER EDITION 💸</title>
+<title>Scam Wars · Summer 2025</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Archivo+Black&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap');
 
-* { margin:0; padding:0; box-sizing:border-box; }
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-:root{
-  --teamA:#ff2e63;
-  --teamB:#ffd93d;
-  --bg:#0a0a14;
+:root {
+  --bg:    #0e0f11;
+  --surf:  #161719;
+  --surf2: #1e2024;
+  --line:  rgba(255,255,255,.08);
+  --line2: rgba(255,255,255,.13);
+  --txt:   #f0f0f0;
+  --muted: #6b6e77;
+  --a:     #ef5350;
+  --a-dim: rgba(239,83,80,.12);
+  --b:     #f0b429;
+  --b-dim: rgba(240,180,41,.12);
+  --c:     #42a5f5;
+  --c-dim: rgba(66,165,245,.12);
+  --accent:#a78bfa;
 }
 
-body{
-  font-family:'Space Mono',monospace;
-  background:var(--bg);
-  color:#fff;
-  min-height:100vh;
-  overflow-x:hidden;
-  position:relative;
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
 
-body::before{
-  content:"";
-  position:fixed; inset:0;
-  background:
-    radial-gradient(circle at 18% 30%, rgba(255,46,99,.16), transparent 42%),
-    radial-gradient(circle at 82% 30%, rgba(255,217,61,.14), transparent 42%),
-    radial-gradient(circle at 50% 85%, rgba(0,245,212,.10), transparent 45%);
-  z-index:-2;
-  animation:bgmove 12s ease-in-out infinite alternate;
+/* ── NAV TABS ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(14,15,17,.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 2px;
+  height: 52px;
 }
-@keyframes bgmove{ to{ transform:scale(1.3) rotate(5deg); } }
-
-.rain{ position:fixed; inset:0; pointer-events:none; z-index:0; overflow:hidden; }
-.rain span{ position:absolute; top:-50px; font-size:28px; animation:fall linear infinite; opacity:.5; }
-@keyframes fall{ to{ transform:translateY(110vh) rotate(360deg); } }
-
-.wrap{ max-width:900px; margin:0 auto; padding:24px 16px 80px; position:relative; z-index:1; }
-
-header{ text-align:center; margin-bottom:18px; }
-h1{
-  font-family:'Bungee',cursive;
-  font-size:clamp(26px,7.5vw,58px);
-  line-height:.95;
-  background:linear-gradient(90deg,var(--teamA),#fff,var(--teamB),var(--teamA));
-  background-size:300% 100%;
-  -webkit-background-clip:text; background-clip:text;
-  -webkit-text-fill-color:transparent;
-  animation:shine 4s linear infinite;
-  filter:drop-shadow(3px 3px 0 #000);
+.nav-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--txt);
+  margin-right: auto;
+  letter-spacing: -.3px;
 }
-@keyframes shine{ to{ background-position:300% 0; } }
-.sub{ font-size:13px; letter-spacing:3px; margin-top:8px; opacity:.7; text-transform:uppercase; }
-.sub b{ color:var(--teamB); }
-
-/* sync status pill */
-.sync{ display:inline-block; margin-top:10px; font-size:11px; letter-spacing:1px; padding:5px 14px; border-radius:99px; border:1px solid #444; opacity:.85; }
-.sync.ok{ border-color:#00f5d4; color:#00f5d4; }
-.sync.err{ border-color:var(--teamA); color:var(--teamA); }
-.sync.saving{ border-color:var(--teamB); color:var(--teamB); }
-
-.musicbtn{
-  display:inline-flex; align-items:center; gap:8px; margin:14px auto 0; cursor:pointer;
-  padding:10px 20px; border-radius:99px; border:2px solid var(--teamB); background:#000;
-  color:var(--teamB); font-family:'Space Mono'; font-weight:700; letter-spacing:1px;
-  font-size:13px; transition:.2s; text-transform:uppercase;
+.nav-title span { color: var(--b); }
+.tab-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--muted);
+  padding: 6px 14px; border-radius: 8px;
+  transition: .15s; letter-spacing: .2px;
+  display: flex; align-items: center; gap: 6px;
 }
-.musicbtn:hover{ box-shadow:0 0 18px var(--teamB); transform:scale(1.05); }
-.musicbtn.on{ border-color:#00f5d4; color:#00f5d4; }
-.musicbtn.on:hover{ box-shadow:0 0 18px #00f5d4; }
-
-.arena{ display:grid; grid-template-columns:1fr auto 1fr; align-items:center; gap:12px; margin:34px 0 10px; }
-.fighter{
-  text-align:center; padding:20px 12px; border-radius:18px; border:3px solid;
-  position:relative; transition:.5s cubic-bezier(.2,1.4,.5,1); background:rgba(255,255,255,.03);
+.tab-btn svg { opacity: .6; }
+.tab-btn:hover { color: var(--txt); background: var(--surf2); }
+.tab-btn.active { color: var(--txt); background: var(--surf2); }
+.tab-btn.active svg { opacity: 1; }
+.sync-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); margin-left: 8px;
+  transition: background .4s;
 }
-.fighter.A{ border-color:var(--teamA); color:var(--teamA); }
-.fighter.B{ border-color:var(--teamB); color:var(--teamB); }
-.fighter.lead{ box-shadow:0 0 50px -8px currentColor, inset 0 0 34px rgba(255,255,255,.08); transform:scale(1.04); }
-.fighter.justwon{ animation:pop .6s cubic-bezier(.2,1.6,.4,1); }
-@keyframes pop{ 0%{transform:scale(1.04);} 40%{transform:scale(1.15) rotate(-2deg);} 100%{transform:scale(1.04);} }
-.fighter .crown{ font-size:30px; height:34px; }
-.fighter .fname{ font-family:'Archivo Black'; font-size:18px; color:#fff; text-transform:uppercase; margin-top:4px; word-break:break-word; }
-.fighter .fcash{ font-family:'Bungee'; font-size:30px; margin-top:8px; text-shadow:0 0 16px currentColor; }
-.fighter .ftag{ font-size:11px; font-weight:700; margin-top:8px; min-height:14px; color:#fff; opacity:.85; }
-.vs{ font-family:'Bungee'; font-size:clamp(26px,7vw,46px); color:#fff; text-shadow:0 0 20px var(--teamA),0 0 30px var(--teamB); animation:vspulse 1.4s ease-in-out infinite; }
-@keyframes vspulse{ 50%{ transform:scale(1.12); } }
+.sync-dot.ok  { background: #4caf50; box-shadow: 0 0 6px #4caf5088; }
+.sync-dot.err { background: var(--a); }
+.sync-dot.saving { background: var(--b); }
 
-.tug{ height:18px; border-radius:99px; overflow:hidden; display:flex; border:2px solid #000; margin:6px 0 30px; box-shadow:0 0 0 1px rgba(255,255,255,.1); }
-.tug .a{ background:var(--teamA); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
-.tug .b{ background:var(--teamB); transition:width .7s cubic-bezier(.3,1.4,.5,1); }
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
 
-.team-block{ margin-bottom:16px; }
-.team-block > .label{ font-family:'Archivo Black'; font-size:13px; letter-spacing:2px; text-transform:uppercase; margin-bottom:8px; opacity:.8; }
-.team-block.A > .label{ color:var(--teamA); }
-.team-block.B > .label{ color:var(--teamB); }
-
-.card{
-  border:3px solid; border-radius:16px; padding:16px; margin-bottom:12px;
-  background:rgba(255,255,255,.03); backdrop-filter:blur(4px);
-  position:relative; overflow:hidden;
+/* ══════════════════════════════════
+   DISPLAY PAGE
+══════════════════════════════════ */
+.display-wrap {
+  max-width: 900px; margin: 0 auto; padding: 40px 24px 80px;
 }
-.card::after{ content:""; position:absolute; right:-30px; top:-30px; width:120px; height:120px; border-radius:50%; background:currentColor; opacity:.12; filter:blur(20px); }
-.card.A{ border-color:var(--teamA); color:var(--teamA); }
-.card.B{ border-color:var(--teamB); color:var(--teamB); }
-.chead{ display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
-.chead .nm{ font-family:'Archivo Black'; font-size:18px; text-transform:uppercase; }
-.total{ font-family:'Bungee'; font-size:22px; color:#fff; text-shadow:0 0 14px currentColor; }
-.months{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-.month label{ display:block; font-size:10px; text-transform:uppercase; letter-spacing:1px; margin-bottom:3px; opacity:.8; }
-.month input{
-  width:100%; padding:8px; border-radius:8px; border:2px solid currentColor;
-  background:#000; color:#fff; font-family:'Space Mono'; font-weight:700; font-size:14px; text-align:center;
-}
-.month input:focus{ outline:none; box-shadow:0 0 12px currentColor; }
 
-footer{ text-align:center; margin-top:24px; font-size:11px; opacity:.5; }
+/* headline */
+.headline {
+  text-align: center; margin-bottom: 48px;
+}
+.headline h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -.5px;
+}
+.headline h1 em { font-style: normal; color: var(--b); }
+.headline p {
+  margin-top: 10px;
+  color: var(--muted); font-size: 13px; letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* 3-col podium */
+.podium {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.pod {
+  border: 1px solid var(--line2);
+  border-radius: 20px;
+  padding: 28px 20px 24px;
+  text-align: center;
+  background: var(--surf);
+  position: relative;
+  transition: transform .3s ease, box-shadow .3s ease;
+  overflow: hidden;
+}
+.pod::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 19px;
+  opacity: 0; transition: opacity .3s;
+}
+.pod.A::before { background: var(--a-dim); }
+.pod.B::before { background: var(--b-dim); }
+.pod.C::before { background: var(--c-dim); }
+.pod.lead { border-width: 1.5px; transform: translateY(-6px); }
+.pod.A.lead { border-color: var(--a); box-shadow: 0 12px 40px rgba(239,83,80,.2); }
+.pod.B.lead { border-color: var(--b); box-shadow: 0 12px 40px rgba(240,180,41,.2); }
+.pod.C.lead { border-color: var(--c); box-shadow: 0 12px 40px rgba(66,165,245,.2); }
+.pod.lead::before { opacity: 1; }
+.pod.pop { animation: podpop .5s cubic-bezier(.2,1.5,.4,1) forwards; }
+@keyframes podpop { 0%{transform:translateY(-6px)} 50%{transform:translateY(-14px) scale(1.03)} 100%{transform:translateY(-6px)} }
+
+.pod-crown { height: 28px; font-size: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+.pod-emoji { font-size: 32px; margin-bottom: 10px; }
+.pod-name {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 14px;
+}
+.pod-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 500; letter-spacing: -1px;
+}
+.pod.A .pod-amount { color: var(--a); }
+.pod.B .pod-amount { color: var(--b); }
+.pod.C .pod-amount { color: var(--c); }
+.pod-tag {
+  margin-top: 10px; font-size: 11px;
+  color: var(--muted); min-height: 14px;
+  font-weight: 500;
+}
+
+/* progress bar */
+.progress-section { margin-bottom: 44px; }
+.progress-label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.progress-label span { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.progress-track {
+  height: 6px; border-radius: 99px;
+  background: var(--surf2);
+  display: flex; overflow: hidden;
+  gap: 2px;
+}
+.progress-track .seg {
+  height: 100%; border-radius: 99px;
+  transition: width .8s cubic-bezier(.3,1.2,.4,1);
+  min-width: 0;
+}
+.seg.A { background: var(--a); }
+.seg.B { background: var(--b); }
+.seg.C { background: var(--c); }
+
+/* charts */
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:36px; }
+@media(max-width:600px){ .charts-grid { grid-template-columns:1fr; } }
+.chart-card { background:var(--surf); border:1px solid var(--line); border-radius:16px; padding:20px 20px 16px; }
+.chart-title { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.chart-canvas-wrap { position:relative; height:200px; }
+
+/* breakdown table */
+.breakdown {
+  background: var(--surf); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden;
+}
+.breakdown-title {
+  padding: 18px 24px 14px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.brow {
+  display: grid; grid-template-columns: 32px 1fr repeat(4, 80px);
+  align-items: center; gap: 0;
+  padding: 13px 24px;
+  border-bottom: 1px solid var(--line);
+  transition: background .15s;
+}
+.brow:last-child { border-bottom: none; }
+.brow:hover { background: var(--surf2); }
+.brow.team-row {
+  background: rgba(255,255,255,.02);
+  padding: 10px 24px;
+}
+.brow.team-row .brow-name {
+  font-weight: 600; font-size: 12px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.brow-emoji { font-size: 16px; }
+.brow-name { font-size: 14px; font-weight: 500; }
+.brow-mo {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; text-align: right;
+  color: var(--muted);
+}
+.brow-mo.has-val { color: var(--txt); }
+.brow-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500; text-align: right;
+}
+.brow.A .brow-total { color: var(--a); }
+.brow.B .brow-total { color: var(--b); }
+.brow.C .brow-total { color: var(--c); }
+.brow.team-row .brow-total { font-size: 15px; font-weight: 600; }
+.col-header {
+  display: grid; grid-template-columns: 32px 1fr repeat(4, 80px);
+  padding: 0 24px 8px;
+  gap: 0;
+}
+.col-header span {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); text-align: right;
+}
+.col-header span:first-child,
+.col-header span:nth-child(2) { text-align: left; }
+
+/* ══════════════════════════════════
+   INPUT PAGE
+══════════════════════════════════ */
+.input-wrap {
+  max-width: 680px; margin: 0 auto; padding: 36px 24px 80px;
+}
+.input-section { margin-bottom: 36px; }
+.input-section-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 16px;
+}
+.input-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--line2);
+}
+.input-section-title .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot.A { background: var(--a); }
+.dot.B { background: var(--b); }
+.dot.C { background: var(--c); }
+
+.input-card {
+  background: var(--surf);
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.input-card-left { display: flex; align-items: center; gap: 12px; }
+.input-card-emoji { font-size: 22px; }
+.input-card-name { font-size: 15px; font-weight: 500; }
+.input-card-subtotal {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; color: var(--muted);
+  margin-top: 1px;
+}
+.input-months {
+  display: flex; gap: 8px;
+}
+.input-month { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.input-month label {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.input-month input {
+  width: 80px; padding: 8px 10px;
+  background: var(--surf2); border: 1px solid var(--line2);
+  border-radius: 8px; color: var(--txt);
+  font-family: 'DM Mono', monospace; font-size: 14px;
+  text-align: center; transition: .15s;
+  -moz-appearance: textfield;
+}
+.input-month input::-webkit-inner-spin-button,
+.input-month input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.input-month input:focus {
+  outline: none; border-color: rgba(255,255,255,.3);
+  background: var(--surf); box-shadow: 0 0 0 3px rgba(255,255,255,.05);
+}
+.input-month.A input:focus { border-color: var(--a); box-shadow: 0 0 0 3px var(--a-dim); }
+.input-month.B input:focus { border-color: var(--b); box-shadow: 0 0 0 3px var(--b-dim); }
+.input-month.C input:focus { border-color: var(--c); box-shadow: 0 0 0 3px var(--c-dim); }
+.input-month input::placeholder { color: var(--muted); opacity: .6; }
+
+/* toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(70px);
+  background: var(--surf); border: 1px solid var(--line2);
+  border-radius: 99px; padding: 10px 22px;
+  font-size: 13px; font-weight: 500; color: var(--txt);
+  z-index: 100; pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,1.4,.5,1), opacity .35s;
+  opacity: 0; white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
-<div class="rain" id="rain"></div>
-<div class="wrap">
-  <header>
-    <h1>SCAM WARS · 2v2</h1>
-    <div class="sub">summer showdown · <b>jun → jul → aug</b> · last team standing eats 🤑</div>
-    <div><span class="sync" id="sync">connecting…</span></div>
-    <button class="musicbtn" id="musicbtn" onclick="toggleMusic()">🔇 tap to start the vibe</button>
-  </header>
 
-  <div class="arena" id="arena"></div>
-  <div class="tug"><div class="a" id="tug-a"></div><div class="b" id="tug-b"></div></div>
+<nav class="nav">
+  <span class="nav-title">Scam <span>Wars</span></span>
+  <button class="tab-btn active" id="tab-display" onclick="switchTab('display')">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+    Scoreboard
+  </button>
+  <button class="tab-btn" id="tab-input" onclick="switchTab('input')">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Enter Numbers
+  </button>
+  <div class="sync-dot" id="sync-dot"></div>
+</nav>
 
-  <div id="teams"></div>
+<!-- ═══ DISPLAY PAGE ═══ -->
+<div class="page active" id="page-display">
+  <div class="display-wrap">
+    <div class="headline">
+      <h1>Scam <em>Wars</em></h1>
+      <p>June · July · August · 2025</p>
+    </div>
 
-  <footer>shared live scoreboard · everyone sees the same numbers · auto-syncs every few seconds 📈</footer>
+    <div class="podium" id="podium"></div>
+
+    <div class="progress-section">
+      <div class="progress-label">
+        <span id="prog-a-lbl">Team A — 0%</span>
+        <span>Share of total</span>
+        <span id="prog-c-lbl">Team C — 0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="seg A" id="seg-a" style="width:33%"></div>
+        <div class="seg B" id="seg-b" style="width:34%"></div>
+        <div class="seg C" id="seg-c" style="width:33%"></div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Monthly earnings by team</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-bar"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Cumulative race</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-line"></canvas></div>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">Full Breakdown</div>
+      <div class="col-header">
+        <span></span><span>Player</span>
+        <span>June</span><span>July</span><span>Aug</span><span>Total</span>
+      </div>
+      <div id="breakdown-body"></div>
+    </div>
+  </div>
 </div>
 
-<audio id="bgMusic" src="bgmusic.mp3" loop preload="auto"></audio>
+<!-- ═══ INPUT PAGE ═══ -->
+<div class="page" id="page-input">
+  <div class="input-wrap">
+    <div id="input-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
 <audio id="firstSound" src="first.mp3" preload="auto"></audio>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-/* ============================================================
-   JSONBIN SHARED STORAGE  — FILL THESE TWO IN  (see chat instructions)
-   ============================================================ */
 const JSONBIN_BIN_ID  = "6a18597521f9ee59d295b48b";
 const JSONBIN_API_KEY = "$2a$10$wUL5vHPci5ylelUPqniAi.03JVw.StV/nmHsQvIlSaWTCvi6L161e";
-/* ============================================================ */
-
 const BIN_URL = "https://api.jsonbin.io/v3/b/" + JSONBIN_BIN_ID;
-const HEADERS = { "Content-Type":"application/json", "X-Master-Key": JSONBIN_API_KEY };
+const HDRS = { "Content-Type": "application/json", "X-Master-Key": JSONBIN_API_KEY };
 
 const TEAMS = {
-  A: { side:'A', name:'Lazic / Velja',  emoji:'🐺🐉', members:[
-        { id:'lazic', name:'Lazic', emoji:'🐺' },
-        { id:'velja', name:'Velja', emoji:'🐉' },
-      ]},
-  B: { side:'B', name:'Dusan / David', emoji:'👑', members:[
-        { id:'dusan', name:'Dusan', emoji:'👑' },
-        { id:'david', name:'David', emoji:'🤴' },
-      ]},
+  A: { side:'A', name:'Lazic & Velja',  color:'#ef5350', emoji:'🐺🐉', members:[
+    {id:'lazic',name:'Lazic',emoji:'🐺'},
+    {id:'velja',name:'Velja',emoji:'🐉'}
+  ]},
+  B: { side:'B', name:'Dusan & David',  color:'#f0b429', emoji:'👑🤴', members:[
+    {id:'dusan',name:'Dusan',emoji:'👑'},
+    {id:'david',name:'David',emoji:'🤴'}
+  ]},
+  C: { side:'C', name:'Simela & Injac', color:'#42a5f5', emoji:'🌊💙', members:[
+    {id:'simela',name:'Simela',emoji:'🌊'},
+    {id:'injac', name:'Injac', emoji:'💙'}
+  ]},
 };
-const MONTHS = ['June','July','August'];
-const LEAD_HYPE = ['👑 ON TOP. UNTOUCHABLE','💎 GOATED fr','🚀 sigma grindset','🔥 cooking the opps'];
-const LOSE_HYPE = ['💀 it\'s so over','🤡 down bad','🪦 L + ratio','😭 lock in gng'];
-const TIE_HYPE  = ['😳 dead even...','🤝 nobody eating yet'];
+const MONTHS = ['June', 'July', 'Aug'];
 
-const RE = ['💸','🤑','💵','📈','🪙','💰','🔥','💎'];
-const rain = document.getElementById('rain');
-for(let i=0;i<22;i++){
-  const s=document.createElement('span');
-  s.textContent=RE[i%RE.length];
-  s.style.left=Math.random()*100+'%';
-  s.style.animationDuration=(6+Math.random()*8)+'s';
-  s.style.animationDelay=(-Math.random()*10)+'s';
-  s.style.fontSize=(18+Math.random()*26)+'px';
-  rain.appendChild(s);
-}
+const TAGS = {
+  lead: ['Leading the pack', 'On top right now', 'Setting the pace', 'Ahead of the curve'],
+  lose: ['Chasing the leaders', 'Room to grow', 'Still in the game', 'Building momentum'],
+  tie:  ['All tied up', 'Neck and neck'],
+};
 
 let data = {};
-Object.values(TEAMS).forEach(t=> t.members.forEach(m=> data[m.id]=[0,0,0]));
-let currentLeader = null;
-let activeInput = null;   // don't overwrite a field the user is typing in
-let saveTimer = null;
+Object.values(TEAMS).forEach(t => t.members.forEach(m => data[m.id] = [0,0,0]));
+let currentLeader = null, activeInput = null, saveTimer = null;
 
-function setSync(state, msg){
-  const el=document.getElementById('sync');
-  el.className='sync '+(state||'');
-  el.textContent=msg;
+// ── sync indicator
+function setSync(state) {
+  const d = document.getElementById('sync-dot');
+  d.className = 'sync-dot ' + state;
 }
 
-/* ---------- shared cloud storage ---------- */
-async function cloudLoad(){
-  if(JSONBIN_BIN_ID.startsWith("PASTE")){ setSync('err','⚠ not configured — see setup'); return; }
-  try{
-    const r = await fetch(BIN_URL+"/latest", { headers: HEADERS });
-    if(!r.ok) throw new Error(r.status);
-    const j = await r.json();
-    const rec = j.record || {};
-    Object.keys(data).forEach(id=>{ if(Array.isArray(rec[id])) data[id]=rec[id]; });
-    setSync('ok','🟢 live & synced');
+// ── cloud
+async function cloudLoad() {
+  try {
+    const r = await fetch(BIN_URL + "/latest", { headers: HDRS });
+    if (!r.ok) throw 0;
+    const rec = (await r.json()).record || {};
+    Object.keys(data).forEach(id => { if (Array.isArray(rec[id])) data[id] = rec[id]; });
+    setSync('ok');
     refreshInputs(); render();
-  }catch(e){ setSync('err','🔴 sync error (retrying)'); }
+  } catch(e) { setSync('err'); }
+}
+async function cloudSave() {
+  setSync('saving');
+  try {
+    const r = await fetch(BIN_URL, { method:'PUT', headers:HDRS, body:JSON.stringify(data) });
+    if (!r.ok) throw 0;
+    setSync('ok');
+  } catch(e) { setSync('err'); }
+}
+function queueSave() { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 700); }
+
+// ── formatting
+const fmt   = n => '$' + (n || 0).toLocaleString('en-US');
+const fmtPc = n => Math.round(n) + '%';
+const memberTotal = id   => data[id].reduce((a, b) => a + (+b || 0), 0);
+const teamTotal   = side => TEAMS[side].members.reduce((s, m) => s + memberTotal(m.id), 0);
+
+// ── tabs
+function switchTab(tab) {
+  document.getElementById('page-display').classList.toggle('active', tab === 'display');
+  document.getElementById('page-input').classList.toggle('active', tab === 'input');
+  document.getElementById('tab-display').classList.toggle('active', tab === 'display');
+  document.getElementById('tab-input').classList.toggle('active', tab === 'input');
 }
 
-async function cloudSave(){
-  if(JSONBIN_BIN_ID.startsWith("PASTE")){ return; }
-  setSync('saving','💾 saving…');
-  try{
-    const r = await fetch(BIN_URL, { method:"PUT", headers:HEADERS, body:JSON.stringify(data) });
-    if(!r.ok) throw new Error(r.status);
-    setSync('ok','🟢 live & synced');
-  }catch(e){ setSync('err','🔴 save failed'); }
-}
-
-function queueSave(){
-  clearTimeout(saveTimer);
-  saveTimer = setTimeout(cloudSave, 700); // debounce typing
-}
-
-const fmt = n => '$'+ (n||0).toLocaleString('en-US');
-const memberTotal = id => data[id].reduce((a,b)=>a+(+b||0),0);
-const teamTotal = side => TEAMS[side].members.reduce((s,m)=>s+memberTotal(m.id),0);
-
-/* ---------- local mp3 background music ---------- */
-let musicOn=false;
-function toggleMusic(){
-  const btn=document.getElementById('musicbtn');
-  const audio=document.getElementById('bgMusic');
-  if(musicOn){
-    audio.pause();
-    musicOn=false;
-    btn.classList.remove('on');
-    btn.textContent='🔇 music off';
-  }else{
-    audio.volume=0.45;
-    audio.play().then(()=>{
-      musicOn=true;
-      btn.classList.add('on');
-      btn.textContent='🔊 vibe playing';
-    }).catch(()=>{ btn.textContent='⚠ couldn\'t play (check background.mp3)'; });
-  }
-}
-
-/* ---------- build inputs ---------- */
-function buildTeams(){
-  const wrap=document.getElementById('teams');
-  wrap.innerHTML='';
-  ['A','B'].forEach(side=>{
-    const t=TEAMS[side];
-    const block=document.createElement('div');
-    block.className='team-block '+side;
-    block.innerHTML=`<div class="label">${t.emoji} Team ${t.name}</div>`;
-    t.members.forEach(m=>{
-      const c=document.createElement('div');
-      c.className='card '+side;
-      c.innerHTML=`
-        <div class="chead">
-          <span class="nm">${m.emoji} ${m.name}</span>
-          <span class="total" id="tot-${m.id}">${fmt(memberTotal(m.id))}</span>
+// ── build input page
+function buildInputPage() {
+  const wrap = document.getElementById('input-body');
+  wrap.innerHTML = '';
+  ['A','B','C'].forEach(side => {
+    const t = TEAMS[side];
+    const sec = document.createElement('div'); sec.className = 'input-section';
+    sec.innerHTML = `<div class="input-section-title"><div class="dot ${side}"></div>${t.emoji} ${t.name}</div>`;
+    t.members.forEach(m => {
+      const card = document.createElement('div'); card.className = 'input-card';
+      card.innerHTML = `
+        <div class="input-card-left">
+          <span class="input-card-emoji">${m.emoji}</span>
+          <div>
+            <div class="input-card-name">${m.name}</div>
+            <div class="input-card-subtotal" id="sub-${m.id}">${fmt(memberTotal(m.id))}</div>
+          </div>
         </div>
-        <div class="months">
-          ${MONTHS.map((mo,i)=>`
-            <div class="month">
+        <div class="input-months">
+          ${MONTHS.map((mo, i) => `
+            <div class="input-month ${side}">
               <label>${mo}</label>
-              <input type="number" inputmode="numeric" placeholder="0" id="in-${m.id}-${i}"
-                value="${data[m.id][i]||''}"
+              <input type="number" inputmode="decimal" placeholder="0"
+                id="in-${m.id}-${i}" value="${data[m.id][i] || ''}"
                 onfocus="activeInput='${m.id}-${i}'"
                 onblur="activeInput=null"
                 oninput="edit('${m.id}',${i},this.value)">
             </div>`).join('')}
         </div>`;
-      block.appendChild(c);
+      sec.appendChild(card);
     });
-    wrap.appendChild(block);
+    wrap.appendChild(sec);
   });
 }
 
-// update field values from cloud without disturbing the one being typed in
-function refreshInputs(){
-  Object.keys(data).forEach(id=>{
-    for(let i=0;i<3;i++){
-      const el=document.getElementById('in-'+id+'-'+i);
-      if(el && activeInput!==id+'-'+i){ el.value = data[id][i]||''; }
+function refreshInputs() {
+  Object.keys(data).forEach(id => {
+    for (let i = 0; i < 3; i++) {
+      const el = document.getElementById('in-' + id + '-' + i);
+      if (el && activeInput !== id + '-' + i) el.value = data[id][i] || '';
     }
-    const tot=document.getElementById('tot-'+id);
-    if(tot) tot.textContent=fmt(memberTotal(id));
+    const sub = document.getElementById('sub-' + id);
+    if (sub) sub.textContent = fmt(memberTotal(id));
   });
 }
 
-function edit(id,i,v){
-  data[id][i]= v===''?0:Math.max(0,+v);
-  document.getElementById('tot-'+id).textContent=fmt(memberTotal(id));
+function edit(id, i, v) {
+  data[id][i] = v === '' ? 0 : Math.max(0, +v);
+  const sub = document.getElementById('sub-' + id);
+  if (sub) sub.textContent = fmt(memberTotal(id));
   render(); queueSave();
 }
 
-function playFirstSting(){
-  const a=document.getElementById('firstSound'); if(!a) return;
-  try{ a.currentTime=0; a.volume=0.8; a.play().catch(()=>{}); }catch(e){}
+// ── toast
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
 }
 
-let flashSide=null;
-function render(){
-  const a=teamTotal('A'), b=teamTotal('B'), sum=a+b;
-  document.getElementById('tug-a').style.width=(sum? a/sum*100:50)+'%';
-  document.getElementById('tug-b').style.width=(sum? b/sum*100:50)+'%';
-
-  let leader=null;
-  if(sum>0 && a!==b) leader = a>b ? 'A':'B';
-
-  if(leader && leader!==currentLeader){
-    const firstEver = currentLeader===null;
-    currentLeader=leader;
-    if(!firstEver){ playFirstSting(); flashSide=leader; setTimeout(()=>{flashSide=null; buildArena(a,b,leader);},700); }
-  }else if(!leader){ currentLeader=null; }
-
-  buildArena(a,b,leader);
+// ── sound
+function playFirstSting() {
+  const a = document.getElementById('firstSound');
+  if (!a) return;
+  try { a.currentTime = 0; a.volume = 0.7; a.play().catch(()=>{}); } catch(e){}
 }
 
-function buildArena(a,b,leader){
-  const arena=document.getElementById('arena');
-  const totals={A:a,B:b};
-  arena.innerHTML='';
-  const fA=fighter('A',totals,leader);
-  const vs=document.createElement('div'); vs.className='vs'; vs.textContent='VS';
-  const fB=fighter('B',totals,leader);
-  arena.append(fA,vs,fB);
+// ── charts
+const CHART_OPTS_BASE = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: {
+    legend: { display: true, position: 'bottom', labels: { color:'#6b6e77', font:{size:11,family:'DM Sans,system-ui,sans-serif'}, boxWidth:10, boxHeight:10, padding:14, usePointStyle:true } },
+    tooltip: { backgroundColor:'#1e2024', borderColor:'rgba(255,255,255,.1)', borderWidth:1, titleColor:'#f0f0f0', bodyColor:'#9ca3af', padding:10,
+      callbacks: { label: ctx => ' '+ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString('en-US') } }
+  },
+  scales: {
+    x: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6b6e77', font:{size:11} } },
+    y: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6b6e77', font:{size:11}, callback: v => '$'+Math.round(v).toLocaleString('en-US') }, beginAtZero:true }
+  }
+};
+
+let barChart=null, lineChart=null;
+
+function getTeamMonthly(side){ return [0,1,2].map(i=>TEAMS[side].members.reduce((s,m)=>s+(+data[m.id][i]||0),0)); }
+
+function updateBarChart(){
+  const datasets = ['A','B','C'].map(s=>({
+    label: TEAMS[s].name, data: getTeamMonthly(s),
+    backgroundColor: TEAMS[s].color+'44', borderColor: TEAMS[s].color,
+    borderWidth:2, borderRadius:6, borderSkipped:false,
+  }));
+  if(barChart){ barChart.data.datasets.forEach((d,i)=>{ d.data=datasets[i].data; }); barChart.update(); return; }
+  const ctx = document.getElementById('chart-bar').getContext('2d');
+  barChart = new Chart(ctx, { type:'bar', data:{ labels:MONTHS, datasets }, options: JSON.parse(JSON.stringify(CHART_OPTS_BASE)) });
 }
 
-function fighter(side,totals,leader){
-  const t=TEAMS[side];
-  const isLead = leader===side;
-  const sum=totals.A+totals.B;
-  let tag;
-  if(sum===0) tag=TIE_HYPE[1];
-  else if(totals.A===totals.B) tag=TIE_HYPE[0];
-  else tag = isLead ? LEAD_HYPE[totals[side]%LEAD_HYPE.length] : LOSE_HYPE[totals[side]%LOSE_HYPE.length];
-
-  const d=document.createElement('div');
-  d.className='fighter '+side+(isLead?' lead':'')+(flashSide===side?' justwon':'');
-  d.innerHTML=`
-    <div class="crown">${isLead?'👑':''}</div>
-    <div class="fname">${t.emoji}<br>${t.name}</div>
-    <div class="fcash">${fmt(totals[side])}</div>
-    <div class="ftag">${tag}</div>`;
-  return d;
+function updateLineChart(){
+  const datasets = ['A','B','C'].map(s=>{
+    let cum=0;
+    const cumData = [0,1,2].map(i=>{ cum+=TEAMS[s].members.reduce((sum,m)=>sum+(+data[m.id][i]||0),0); return cum; });
+    return { label:TEAMS[s].name, data:cumData, borderColor:TEAMS[s].color, backgroundColor:TEAMS[s].color+'22',
+      borderWidth:2.5, pointRadius:5, pointBackgroundColor:TEAMS[s].color,
+      pointBorderColor:'#0e0f11', pointBorderWidth:2, fill:true, tension:.35 };
+  });
+  if(lineChart){ lineChart.data.datasets.forEach((d,i)=>{ d.data=datasets[i].data; }); lineChart.update(); return; }
+  const ctx = document.getElementById('chart-line').getContext('2d');
+  lineChart = new Chart(ctx, { type:'line', data:{ labels:MONTHS, datasets }, options: JSON.parse(JSON.stringify(CHART_OPTS_BASE)) });
 }
 
-buildTeams(); render();
+// ── render display page
+let flashSide = null;
+function render() {
+  const a = teamTotal('A'), b = teamTotal('B'), c = teamTotal('C'), sum = a + b + c;
+
+  // progress bar
+  const pA = sum ? a/sum*100 : 33.33;
+  const pB = sum ? b/sum*100 : 33.34;
+  const pC = sum ? c/sum*100 : 33.33;
+  document.getElementById('seg-a').style.width = pA + '%';
+  document.getElementById('seg-b').style.width = pB + '%';
+  document.getElementById('seg-c').style.width = pC + '%';
+  document.getElementById('prog-a-lbl').textContent = TEAMS.A.name + ' — ' + fmtPc(pA);
+  document.getElementById('prog-c-lbl').textContent = TEAMS.C.name + ' — ' + fmtPc(pC);
+
+  // leader
+  const totals = { A:a, B:b, C:c };
+  const maxVal = Math.max(a, b, c);
+  let leader = null;
+  if (sum > 0) {
+    const tops = Object.keys(totals).filter(k => totals[k] === maxVal);
+    if (tops.length === 1) leader = tops[0];
+  }
+
+  if (leader && leader !== currentLeader) {
+    const wasNull = currentLeader === null;
+    currentLeader = leader;
+    if (!wasNull) {
+      playFirstSting();
+      showToast('👑 ' + TEAMS[leader].name + ' takes the lead');
+      flashSide = leader;
+      setTimeout(() => { flashSide = null; buildPodium(totals, leader); }, 600);
+    }
+  } else if (!leader) { currentLeader = null; }
+
+  buildPodium(totals, leader);
+  buildBreakdown(totals);
+  updateBarChart();
+  updateLineChart();
+}
+
+function buildPodium(totals, leader) {
+  const wrap = document.getElementById('podium'); wrap.innerHTML = '';
+  ['A','B','C'].forEach(side => {
+    const t = TEAMS[side];
+    const isLead = leader === side;
+    const total = totals[side];
+    const sum = totals.A + totals.B + totals.C;
+    let tag = '';
+    if (sum === 0) tag = '—';
+    else if (!leader) tag = TAGS.tie[0];
+    else tag = isLead
+      ? TAGS.lead[total % TAGS.lead.length]
+      : TAGS.lose[total % TAGS.lose.length];
+
+    const div = document.createElement('div');
+    div.className = 'pod ' + side + (isLead ? ' lead' : '') + (flashSide === side ? ' pop' : '');
+    div.innerHTML = `
+      <div class="pod-crown">${isLead ? '👑' : ''}</div>
+      <div class="pod-emoji">${t.emoji}</div>
+      <div class="pod-name">${t.name}</div>
+      <div class="pod-amount">${fmt(total)}</div>
+      <div class="pod-tag">${tag}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function buildBreakdown(totals) {
+  const body = document.getElementById('breakdown-body'); body.innerHTML = '';
+  ['A','B','C'].forEach(side => {
+    const t = TEAMS[side];
+    // team row
+    const teamTotal_ = totals[side];
+    const tr = document.createElement('div');
+    tr.className = 'brow team-row ' + side;
+    tr.innerHTML = `
+      <div class="brow-emoji">${t.emoji}</div>
+      <div class="brow-name">${t.name}</div>
+      <div class="brow-mo"></div>
+      <div class="brow-mo"></div>
+      <div class="brow-mo"></div>
+      <div class="brow-total">${fmt(teamTotal_)}</div>`;
+    body.appendChild(tr);
+
+    // member rows
+    t.members.forEach(m => {
+      const vals = data[m.id];
+      const row = document.createElement('div');
+      row.className = 'brow ' + side;
+      row.innerHTML = `
+        <div class="brow-emoji">${m.emoji}</div>
+        <div class="brow-name">${m.name}</div>
+        ${vals.map(v => `<div class="brow-mo ${+v ? 'has-val' : ''}">${+v ? fmt(+v) : '—'}</div>`).join('')}
+        <div class="brow-total">${fmt(memberTotal(m.id))}</div>`;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── init
+buildInputPage();
+render();
 cloudLoad();
-setInterval(cloudLoad, 5000); // poll for others' updates every 5s
+setInterval(cloudLoad, 5000);
 </script>
 </body>
 </html>
