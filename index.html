@@ -378,6 +378,74 @@ html, body {
   100% { transform: translateY(-60px) scale(0); opacity: 0; }
 }
 
+/* ── KOKOT SHAME WALL ── */
+.shame-wall {
+  position: relative;
+  margin: 0 0 44px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a0808 0%, #0e0f11 60%);
+  border: 2px solid var(--a);
+  box-shadow: 0 0 0 1px rgba(239,83,80,.15), 0 8px 48px rgba(239,83,80,.25);
+  animation: shamepulse 2s ease-in-out infinite;
+}
+@keyframes shamepulse {
+  0%,100% { box-shadow: 0 0 0 1px rgba(239,83,80,.15), 0 8px 48px rgba(239,83,80,.25); }
+  50%     { box-shadow: 0 0 0 1px rgba(239,83,80,.35), 0 8px 64px rgba(239,83,80,.5); }
+}
+.shame-tape {
+  background: repeating-linear-gradient(-45deg, #f0b429 0 24px, #111 24px 48px);
+  overflow: hidden; white-space: nowrap;
+  padding: 6px 0;
+}
+.shame-tape-inner {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  color: #111; background: #f0b429;
+  padding: 2px 0;
+  animation: tapescroll 18s linear infinite;
+}
+@keyframes tapescroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.shame-body { padding: 30px 24px 28px; text-align: center; position: relative; }
+.shame-siren { font-size: 30px; animation: sirenshake .5s ease-in-out infinite; display: inline-block; }
+@keyframes sirenshake { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(12deg)} }
+.shame-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5.5vw, 46px);
+  font-weight: 700; line-height: 1.1; letter-spacing: -.5px;
+  margin: 10px 0 4px;
+  color: var(--a);
+  text-shadow: 0 0 24px rgba(239,83,80,.5);
+  animation: shameblink 1.2s steps(2, jump-none) infinite;
+}
+@keyframes shameblink { 50% { opacity: .55; } }
+.shame-headline em { font-style: normal; color: var(--b); text-shadow: 0 0 24px rgba(240,180,41,.6); }
+.shame-sub {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 22px;
+}
+.shame-perps {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+}
+.perp {
+  background: var(--surf2);
+  border: 1px dashed rgba(239,83,80,.5);
+  border-radius: 14px;
+  padding: 14px 18px 12px;
+  min-width: 118px;
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform .2s;
+}
+.perp:hover { transform: rotate(0deg) scale(1.06); }
+.perp-mug { font-size: 30px; filter: grayscale(.6); }
+.perp-name { font-size: 14px; font-weight: 600; margin-top: 6px; }
+.perp-crime {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--a); margin-top: 4px; opacity: .85;
+}
+
 /* toast */
 .toast {
   position: fixed; bottom: 28px; left: 50%;
@@ -493,6 +561,38 @@ html, body {
     <div class="headline">
       <h1>Scam <em>Wars</em></h1>
       <p>June · July · August · 2025</p>
+    </div>
+
+    <div class="shame-wall">
+      <div class="shame-tape"><span class="shame-tape-inner">&nbsp;⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; ⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp;</span></div>
+      <div class="shame-body">
+        <span class="shame-siren">🚨</span>
+        <div class="shame-headline">PRINTING LESS THAN <em>KOKOT</em></div>
+        <div class="shame-sub">Official wall of shame · Wanted for financial crimes against themselves</div>
+        <div class="shame-perps">
+          <div class="perp" style="--tilt:-2deg">
+            <div class="perp-mug">🐺</div>
+            <div class="perp-name">Lazic</div>
+            <div class="perp-crime">Certified broke</div>
+          </div>
+          <div class="perp" style="--tilt:1.5deg">
+            <div class="perp-mug">🐉</div>
+            <div class="perp-name">Velja</div>
+            <div class="perp-crime">Dragon, no hoard</div>
+          </div>
+          <div class="perp" style="--tilt:-1.5deg">
+            <div class="perp-mug">🌊</div>
+            <div class="perp-name">Simela</div>
+            <div class="perp-crime">Cash flow: dry</div>
+          </div>
+          <div class="perp" style="--tilt:2deg">
+            <div class="perp-mug">💙</div>
+            <div class="perp-name">Injac</div>
+            <div class="perp-crime">Allergic to money</div>
+          </div>
+        </div>
+      </div>
+      <div class="shame-tape"><span class="shame-tape-inner">&nbsp;⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; ⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp;</span></div>
     </div>
 
     <div class="podium" id="podium"></div>
