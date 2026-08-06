@@ -1,11 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="sr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Scam Wars · Summer 2025</title>
+<title>Pobednici</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html, body { height:100%; }
+body {
+  background:#0e0f11; color:#f0f0f0;
+  font-family:'DM Sans',system-ui,sans-serif;
+  display:flex; align-items:center; justify-content:center;
+  text-align:center; padding:24px; overflow:hidden;
+}
+.msg {
+  font-family:'Playfair Display',serif;
+  font-size:clamp(28px,6vw,64px);
+  font-weight:700; line-height:1.25; letter-spacing:-.5px;
+  max-width:900px; position:relative; z-index:1;
+}
+.msg em { font-style:normal; color:#f0b429; text-shadow:0 0 40px rgba(240,180,41,.5); }
+.sad { font-size:clamp(32px,7vw,72px); margin-top:24px; display:flex; gap:18px; justify-content:center; }
+.sad span { display:inline-block; animation:cry 2s ease-in-out infinite; }
+.sad span:nth-child(2) { animation-delay:.3s; }
+.sad span:nth-child(3) { animation-delay:.6s; }
+@keyframes cry { 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
+.confetti { position:fixed; top:-20px; pointer-events:none; animation:fall linear forwards; z-index:0; }
+@keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:.7; } }
+</style>
 </head>
 <body>
-  <h1>David i Dusan su pobednici</h1>
+<div>
+  <div class="msg"><em>Dusan i David su pobednici</em>,<br>pokusajte opet sledeci put</div>
+  <div class="sad"><span>😢</span><span>😭</span><span>😿</span></div>
+</div>
+<script>
+const COLORS = ['#f0b429','#ffe87c','#ef5350','#42a5f5','#a78bfa','#66bb6a'];
+function confetti() {
+  const c = document.createElement('div');
+  c.className = 'confetti';
+  const s = 6 + Math.random() * 8;
+  c.style.cssText = `left:${Math.random()*100}vw;width:${s}px;height:${s*0.6}px;background:${COLORS[Math.floor(Math.random()*COLORS.length)]};animation-duration:${3+Math.random()*4}s`;
+  document.body.appendChild(c);
+  setTimeout(() => c.remove(), 8000);
+}
+setInterval(confetti, 120);
+</script>
 </body>
 </html>
