@@ -1,51 +1,1128 @@
 <!DOCTYPE html>
-<html lang="sr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pobednici</title>
+<title>Scam Wars · Summer 2025</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=DM+Sans:wght@400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&family=Playfair+Display:wght@700&display=swap');
+
 *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
-html, body { height:100%; }
-body {
-  background:#0e0f11; color:#f0f0f0;
-  font-family:'DM Sans',system-ui,sans-serif;
-  display:flex; align-items:center; justify-content:center;
-  text-align:center; padding:24px; overflow:hidden;
+
+:root {
+  --bg:    #0e0f11;
+  --surf:  #161719;
+  --surf2: #1e2024;
+  --line:  rgba(255,255,255,.08);
+  --line2: rgba(255,255,255,.13);
+  --txt:   #f0f0f0;
+  --muted: #6b6e77;
+  --a:     #ef5350;
+  --a-dim: rgba(239,83,80,.12);
+  --b:     #f0b429;
+  --b-dim: rgba(240,180,41,.12);
+  --c:     #42a5f5;
+  --c-dim: rgba(66,165,245,.12);
+  --accent:#a78bfa;
 }
-.msg {
-  font-family:'Playfair Display',serif;
-  font-size:clamp(28px,6vw,64px);
-  font-weight:700; line-height:1.25; letter-spacing:-.5px;
-  max-width:900px; position:relative; z-index:1;
+
+html, body {
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
 }
-.msg em { font-style:normal; color:#f0b429; text-shadow:0 0 40px rgba(240,180,41,.5); }
-.sad { font-size:clamp(32px,7vw,72px); margin-top:24px; display:flex; gap:18px; justify-content:center; }
-.sad span { display:inline-block; animation:cry 2s ease-in-out infinite; }
-.sad span:nth-child(2) { animation-delay:.3s; }
-.sad span:nth-child(3) { animation-delay:.6s; }
-@keyframes cry { 0%,100%{transform:translateY(0)} 50%{transform:translateY(10px)} }
-.confetti { position:fixed; top:-20px; pointer-events:none; animation:fall linear forwards; z-index:0; }
-@keyframes fall { to { transform:translateY(110vh) rotate(720deg); opacity:.7; } }
+
+/* ── NAV TABS ── */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(14,15,17,.88);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--line);
+  display: flex; align-items: center;
+  padding: 0 24px;
+  gap: 2px;
+  height: 52px;
+}
+.nav-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  color: var(--txt);
+  margin-right: auto;
+  letter-spacing: -.3px;
+}
+.nav-title span { color: var(--b); }
+.tab-btn {
+  background: none; border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px; font-weight: 500;
+  color: var(--muted);
+  padding: 6px 14px; border-radius: 8px;
+  transition: .15s; letter-spacing: .2px;
+  display: flex; align-items: center; gap: 6px;
+}
+.tab-btn svg { opacity: .6; }
+.tab-btn:hover { color: var(--txt); background: var(--surf2); }
+.tab-btn.active { color: var(--txt); background: var(--surf2); }
+.tab-btn.active svg { opacity: 1; }
+.sync-dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--muted); margin-left: 8px;
+  transition: background .4s;
+}
+.sync-dot.ok  { background: #4caf50; box-shadow: 0 0 6px #4caf5088; }
+.sync-dot.err { background: var(--a); }
+.sync-dot.saving { background: var(--b); }
+
+/* ── PAGES ── */
+.page { display: none; }
+.page.active { display: block; }
+
+/* ══════════════════════════════════
+   DISPLAY PAGE
+══════════════════════════════════ */
+.display-wrap {
+  max-width: 900px; margin: 0 auto; padding: 40px 24px 80px;
+}
+
+/* headline */
+.headline {
+  text-align: center; margin-bottom: 48px;
+}
+.headline h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 6vw, 56px);
+  font-weight: 700; line-height: 1.1;
+  letter-spacing: -.5px;
+}
+.headline h1 em { font-style: normal; color: var(--b); }
+.headline p {
+  margin-top: 10px;
+  color: var(--muted); font-size: 13px; letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* 3-col podium */
+.podium {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.pod {
+  border: 1px solid var(--line2);
+  border-radius: 20px;
+  padding: 28px 20px 24px;
+  text-align: center;
+  background: var(--surf);
+  position: relative;
+  transition: transform .3s ease, box-shadow .3s ease;
+  overflow: hidden;
+}
+.pod::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 19px;
+  opacity: 0; transition: opacity .3s;
+}
+.pod.A::before { background: var(--a-dim); }
+.pod.B::before { background: var(--b-dim); }
+.pod.C::before { background: var(--c-dim); }
+.pod.lead { border-width: 1.5px; transform: translateY(-6px); }
+.pod.A.lead { border-color: var(--a); box-shadow: 0 12px 40px rgba(239,83,80,.2); }
+.pod.B.lead { border-color: var(--b); box-shadow: 0 12px 40px rgba(240,180,41,.2); }
+.pod.C.lead { border-color: var(--c); box-shadow: 0 12px 40px rgba(66,165,245,.2); }
+.pod.lead::before { opacity: 1; }
+.pod.pop { animation: podpop .5s cubic-bezier(.2,1.5,.4,1) forwards; }
+@keyframes podpop { 0%{transform:translateY(-6px)} 50%{transform:translateY(-14px) scale(1.03)} 100%{transform:translateY(-6px)} }
+
+.pod-crown { height: 28px; font-size: 20px; display: flex; align-items: center; justify-content: center; margin-bottom: 6px; }
+.pod-emoji { font-size: 32px; margin-bottom: 10px; }
+.pod-name {
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 14px;
+}
+.pod-amount {
+  font-family: 'DM Mono', monospace;
+  font-size: clamp(24px, 4vw, 38px);
+  font-weight: 500; letter-spacing: -1px;
+}
+.pod.A .pod-amount { color: var(--a); }
+.pod.B .pod-amount { color: var(--b); }
+.pod.C .pod-amount { color: var(--c); }
+.pod-tag {
+  margin-top: 10px; font-size: 11px;
+  color: var(--muted); min-height: 14px;
+  font-weight: 500;
+}
+
+/* progress bar */
+.progress-section { margin-bottom: 44px; }
+.progress-label {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.progress-label span { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); }
+.progress-track {
+  height: 6px; border-radius: 99px;
+  background: var(--surf2);
+  display: flex; overflow: hidden;
+  gap: 2px;
+}
+.progress-track .seg {
+  height: 100%; border-radius: 99px;
+  transition: width .8s cubic-bezier(.3,1.2,.4,1);
+  min-width: 0;
+}
+.seg.A { background: var(--a); }
+.seg.B { background: var(--b); }
+.seg.C { background: var(--c); }
+
+/* charts */
+.charts-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:36px; }
+@media(max-width:600px){ .charts-grid { grid-template-columns:1fr; } }
+.chart-card { background:var(--surf); border:1px solid var(--line); border-radius:16px; padding:20px 20px 16px; }
+.chart-title { font-size:11px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--muted); margin-bottom:16px; }
+.chart-canvas-wrap { position:relative; height:200px; }
+
+/* breakdown table */
+.breakdown {
+  background: var(--surf); border: 1px solid var(--line);
+  border-radius: 16px; overflow: hidden;
+}
+.breakdown-title {
+  padding: 18px 24px 14px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  border-bottom: 1px solid var(--line);
+}
+.brow {
+  display: grid; grid-template-columns: 32px 1fr repeat(4, 80px);
+  align-items: center; gap: 0;
+  padding: 13px 24px;
+  border-bottom: 1px solid var(--line);
+  transition: background .15s;
+}
+.brow:last-child { border-bottom: none; }
+.brow:hover { background: var(--surf2); }
+.brow.team-row {
+  background: rgba(255,255,255,.02);
+  padding: 10px 24px;
+}
+.brow.team-row .brow-name {
+  font-weight: 600; font-size: 12px; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--muted);
+}
+.brow-emoji { font-size: 16px; }
+.brow-name { font-size: 14px; font-weight: 500; }
+.brow-mo {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; text-align: right;
+  color: var(--muted);
+}
+.brow-mo.has-val { color: var(--txt); }
+.brow-total {
+  font-family: 'DM Mono', monospace;
+  font-size: 14px; font-weight: 500; text-align: right;
+}
+.brow.A .brow-total { color: var(--a); }
+.brow.B .brow-total { color: var(--b); }
+.brow.C .brow-total { color: var(--c); }
+.brow.team-row .brow-total { font-size: 15px; font-weight: 600; }
+.col-header {
+  display: grid; grid-template-columns: 32px 1fr repeat(4, 80px);
+  padding: 0 24px 8px;
+  gap: 0;
+}
+.col-header span {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); text-align: right;
+}
+.col-header span:first-child,
+.col-header span:nth-child(2) { text-align: left; }
+
+/* ══════════════════════════════════
+   INPUT PAGE
+══════════════════════════════════ */
+.input-wrap {
+  max-width: 680px; margin: 0 auto; padding: 36px 24px 80px;
+}
+.input-section { margin-bottom: 36px; }
+.input-section-title {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 11px; font-weight: 600; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted);
+  margin-bottom: 16px;
+}
+.input-section-title::after {
+  content: ''; flex: 1; height: 1px; background: var(--line2);
+}
+.input-section-title .dot {
+  width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+}
+.dot.A { background: var(--a); }
+.dot.B { background: var(--b); }
+.dot.C { background: var(--c); }
+
+.input-card {
+  background: var(--surf);
+  border: 1px solid var(--line2);
+  border-radius: 14px;
+  padding: 20px 22px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 16px;
+}
+.input-card-left { display: flex; align-items: center; gap: 12px; }
+.input-card-emoji { font-size: 22px; }
+.input-card-name { font-size: 15px; font-weight: 500; }
+.input-card-subtotal {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; color: var(--muted);
+  margin-top: 1px;
+}
+.input-months {
+  display: flex; gap: 8px;
+}
+.input-month { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.input-month label {
+  font-size: 10px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); font-weight: 500;
+}
+.input-month input {
+  width: 80px; padding: 8px 10px;
+  background: var(--surf2); border: 1px solid var(--line2);
+  border-radius: 8px; color: var(--txt);
+  font-family: 'DM Mono', monospace; font-size: 14px;
+  text-align: center; transition: .15s;
+  -moz-appearance: textfield;
+}
+.input-month input::-webkit-inner-spin-button,
+.input-month input::-webkit-outer-spin-button { -webkit-appearance: none; }
+.input-month input:focus {
+  outline: none; border-color: rgba(255,255,255,.3);
+  background: var(--surf); box-shadow: 0 0 0 3px rgba(255,255,255,.05);
+}
+.input-month.A input:focus { border-color: var(--a); box-shadow: 0 0 0 3px var(--a-dim); }
+.input-month.B input:focus { border-color: var(--b); box-shadow: 0 0 0 3px var(--b-dim); }
+.input-month.C input:focus { border-color: var(--c); box-shadow: 0 0 0 3px var(--c-dim); }
+.input-month input::placeholder { color: var(--muted); opacity: .6; }
+
+/* team management (admin) */
+.team-head { display:flex; align-items:center; gap:10px; margin-bottom:14px; }
+.name-input {
+  background:var(--surf2); border:1px solid var(--line2); border-radius:8px;
+  color:var(--txt); font-family:'DM Sans',sans-serif; font-size:14px; font-weight:500;
+  padding:6px 10px; width:160px; transition:.15s;
+}
+.name-input:focus { outline:none; border-color:rgba(255,255,255,.3); }
+.mini-btn {
+  background:var(--surf2); border:1px solid var(--line2); color:var(--muted);
+  border-radius:8px; font-family:'DM Sans',sans-serif; font-size:11px; font-weight:500;
+  padding:6px 10px; cursor:pointer; transition:.15s; white-space:nowrap;
+}
+.mini-btn:hover { color:var(--txt); border-color:rgba(255,255,255,.3); }
+.mini-btn.danger:hover { color:var(--a); border-color:var(--a); }
+.member-controls { display:flex; align-items:center; gap:6px; margin-top:6px; }
+.member-select {
+  background:var(--surf2); border:1px solid var(--line2); border-radius:8px;
+  color:var(--muted); font-family:'DM Sans',sans-serif; font-size:11px; padding:4px 6px; cursor:pointer;
+}
+.add-team-btn {
+  width:100%; padding:16px; border:1px dashed var(--line2); background:none;
+  border-radius:14px; color:var(--muted); cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500; transition:.15s;
+}
+.add-team-btn:hover { color:var(--txt); border-color:rgba(255,255,255,.3); }
+
+/* prize pool */
+.prize-pool {
+  position: relative;
+  margin: 0 0 44px;
+  border-radius: 24px;
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px 24px 32px;
+  background: linear-gradient(135deg, #1a1508 0%, #0e0f11 60%);
+  border: 1px solid rgba(240,180,41,.25);
+  box-shadow:
+    0 0 0 1px rgba(240,180,41,.08),
+    0 8px 40px rgba(240,180,41,.12),
+    inset 0 1px 0 rgba(255,255,255,.06);
+}
+.prize-pool::before {
+  content: '';
+  position: absolute; inset: 0; border-radius: 24px;
+  background: radial-gradient(ellipse 70% 50% at 50% 0%, rgba(240,180,41,.18), transparent 70%);
+  pointer-events: none;
+}
+.prize-label {
+  font-size: 11px; font-weight: 600; letter-spacing: 3px;
+  text-transform: uppercase; color: rgba(240,180,41,.6);
+  margin-bottom: 6px; position: relative; z-index: 1;
+}
+.prize-amount {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 10vw, 82px);
+  font-weight: 700; line-height: 1;
+  background: linear-gradient(180deg, #ffe87c 0%, #f0b429 40%, #c87d0e 100%);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 2px 12px rgba(240,180,41,.4));
+  position: relative; z-index: 1;
+  animation: prizeglow 3s ease-in-out infinite alternate;
+}
+@keyframes prizeglow {
+  from { filter: drop-shadow(0 2px 12px rgba(240,180,41,.3)); }
+  to   { filter: drop-shadow(0 4px 28px rgba(240,180,41,.7)); }
+}
+.prize-sub {
+  font-size: 12px; color: rgba(240,180,41,.5); letter-spacing: 2px;
+  text-transform: uppercase; margin-top: 8px; position: relative; z-index: 1;
+}
+/* coin pile SVGs */
+.coins-left, .coins-right {
+  position: absolute; bottom: -12px;
+  pointer-events: none; z-index: 2;
+}
+.coins-left  { left:  -10px; }
+.coins-right { right: -10px; transform: scaleX(-1); }
+/* floating sparkles */
+.sparkle {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  animation: sparklefly linear infinite;
+  background: radial-gradient(circle, #ffe87c, transparent);
+}
+@keyframes sparklefly {
+  0%   { transform: translateY(0) scale(1); opacity: .8; }
+  100% { transform: translateY(-60px) scale(0); opacity: 0; }
+}
+
+/* ── KOKOT SHAME WALL ── */
+.shame-wall {
+  position: relative;
+  margin: 0 0 44px;
+  border-radius: 24px;
+  overflow: hidden;
+  background: linear-gradient(135deg, #1a0808 0%, #0e0f11 60%);
+  border: 2px solid var(--a);
+  box-shadow: 0 0 0 1px rgba(239,83,80,.15), 0 8px 48px rgba(239,83,80,.25);
+  animation: shamepulse 2s ease-in-out infinite;
+}
+@keyframes shamepulse {
+  0%,100% { box-shadow: 0 0 0 1px rgba(239,83,80,.15), 0 8px 48px rgba(239,83,80,.25); }
+  50%     { box-shadow: 0 0 0 1px rgba(239,83,80,.35), 0 8px 64px rgba(239,83,80,.5); }
+}
+.shame-tape {
+  background: repeating-linear-gradient(-45deg, #f0b429 0 24px, #111 24px 48px);
+  overflow: hidden; white-space: nowrap;
+  padding: 6px 0;
+}
+.shame-tape-inner {
+  display: inline-block;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; font-weight: 500; letter-spacing: 3px;
+  color: #111; background: #f0b429;
+  padding: 2px 0;
+  animation: tapescroll 18s linear infinite;
+}
+@keyframes tapescroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.shame-body { padding: 30px 24px 28px; text-align: center; position: relative; }
+.shame-siren { font-size: 30px; animation: sirenshake .5s ease-in-out infinite; display: inline-block; }
+@keyframes sirenshake { 0%,100%{transform:rotate(-12deg)} 50%{transform:rotate(12deg)} }
+.shame-headline {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(26px, 5.5vw, 46px);
+  font-weight: 700; line-height: 1.1; letter-spacing: -.5px;
+  margin: 10px 0 4px;
+  color: var(--a);
+  text-shadow: 0 0 24px rgba(239,83,80,.5);
+  animation: shameblink 1.2s steps(2, jump-none) infinite;
+}
+@keyframes shameblink { 50% { opacity: .55; } }
+.shame-headline em { font-style: normal; color: var(--b); text-shadow: 0 0 24px rgba(240,180,41,.6); }
+.shame-sub {
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 22px;
+}
+.shame-perps {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+}
+.perp {
+  background: var(--surf2);
+  border: 1px dashed rgba(239,83,80,.5);
+  border-radius: 14px;
+  padding: 14px 18px 12px;
+  min-width: 118px;
+  transform: rotate(var(--tilt, 0deg));
+  transition: transform .2s;
+}
+.perp:hover { transform: rotate(0deg) scale(1.06); }
+.perp-mug { font-size: 30px; filter: grayscale(.6); }
+.perp-name { font-size: 14px; font-weight: 600; margin-top: 6px; }
+.perp-crime {
+  font-family: 'DM Mono', monospace;
+  font-size: 10px; letter-spacing: 1px; text-transform: uppercase;
+  color: var(--a); margin-top: 4px; opacity: .85;
+}
+
+/* toast */
+.toast {
+  position: fixed; bottom: 28px; left: 50%;
+  transform: translateX(-50%) translateY(70px);
+  background: var(--surf); border: 1px solid var(--line2);
+  border-radius: 99px; padding: 10px 22px;
+  font-size: 13px; font-weight: 500; color: var(--txt);
+  z-index: 100; pointer-events: none;
+  transition: transform .35s cubic-bezier(.2,1.4,.5,1), opacity .35s;
+  opacity: 0; white-space: nowrap;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 </style>
 </head>
 <body>
-<div>
-  <div class="msg"><em>Dusan i David su pobednici</em>,<br>pokusajte opet sledeci put</div>
-  <div class="sad"><span>😢</span><span>😭</span><span>😿</span></div>
+
+<nav class="nav">
+  <span class="nav-title">Scam <span>Wars</span></span>
+  <button class="tab-btn active" id="tab-display" onclick="switchTab('display')">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M3 9h18M9 21V9"/></svg>
+    Scoreboard
+  </button>
+  <button class="tab-btn" id="tab-input" onclick="switchTab('input')" style="display:none">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+    Enter Numbers
+  </button>
+  <div class="sync-dot" id="sync-dot"></div>
+</nav>
+
+<!-- ═══ DISPLAY PAGE ═══ -->
+<div class="page active" id="page-display">
+  <div class="display-wrap">
+    <div class="prize-pool" id="prize-pool">
+      <!-- coin piles -->
+      <div class="coins-left">
+        <svg width="140" height="120" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- back coins -->
+          <ellipse cx="55" cy="96" rx="38" ry="11" fill="#7a4a00" opacity=".6"/>
+          <rect x="17" y="62" width="76" height="34" rx="2" fill="url(#cg1)"/>
+          <ellipse cx="55" cy="62" rx="38" ry="11" fill="url(#cgt)"/>
+          <!-- mid stack -->
+          <ellipse cx="42" cy="80" rx="30" ry="9" fill="#6a3e00" opacity=".5"/>
+          <rect x="12" y="50" width="60" height="30" rx="2" fill="url(#cg2)"/>
+          <ellipse cx="42" cy="50" rx="30" ry="9" fill="url(#cgt2)"/>
+          <!-- front small -->
+          <ellipse cx="68" cy="86" rx="22" ry="7" fill="#5c3400" opacity=".5"/>
+          <rect x="46" y="60" width="44" height="26" rx="2" fill="url(#cg3)"/>
+          <ellipse cx="68" cy="60" rx="22" ry="7" fill="url(#cgt3)"/>
+          <!-- bag of money -->
+          <ellipse cx="105" cy="92" rx="26" ry="10" fill="#3a2800" opacity=".7"/>
+          <path d="M82 60 Q79 92 105 92 Q131 92 128 60 Q120 44 105 44 Q90 44 82 60Z" fill="url(#baggrad)"/>
+          <path d="M97 44 Q105 38 113 44" stroke="#c87d0e" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <ellipse cx="105" cy="44" rx="10" ry="4" fill="url(#bagknot)"/>
+          <text x="105" y="78" font-size="18" text-anchor="middle" fill="rgba(255,220,80,.9)">$</text>
+          <!-- shine on bag -->
+          <ellipse cx="96" cy="60" rx="7" ry="10" fill="white" opacity=".12" transform="rotate(-15 96 60)"/>
+          <!-- coin edges detail -->
+          <line x1="17" y1="66" x2="93" y2="66" stroke="#f0b429" stroke-width=".5" opacity=".3"/>
+          <line x1="17" y1="70" x2="93" y2="70" stroke="#f0b429" stroke-width=".5" opacity=".2"/>
+          <line x1="17" y1="74" x2="93" y2="74" stroke="#f0b429" stroke-width=".5" opacity=".15"/>
+          <defs>
+            <linearGradient id="cg1" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+            <linearGradient id="cgt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff5a0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="cg2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd84a"/><stop offset="100%" stop-color="#b06a00"/></linearGradient>
+            <linearGradient id="cgt2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#e09a20"/></linearGradient>
+            <linearGradient id="cg3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffed90"/><stop offset="100%" stop-color="#d48c10"/></linearGradient>
+            <linearGradient id="cgt3" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7b0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="baggrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0b429"/><stop offset="50%" stop-color="#c87d0e"/><stop offset="100%" stop-color="#7a4a00"/></linearGradient>
+            <linearGradient id="bagknot" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="coins-right">
+        <svg width="140" height="120" viewBox="0 0 140 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <ellipse cx="55" cy="96" rx="38" ry="11" fill="#7a4a00" opacity=".6"/>
+          <rect x="17" y="62" width="76" height="34" rx="2" fill="url(#cg1r)"/>
+          <ellipse cx="55" cy="62" rx="38" ry="11" fill="url(#cgtr)"/>
+          <ellipse cx="42" cy="80" rx="30" ry="9" fill="#6a3e00" opacity=".5"/>
+          <rect x="12" y="50" width="60" height="30" rx="2" fill="url(#cg2r)"/>
+          <ellipse cx="42" cy="50" rx="30" ry="9" fill="url(#cgt2r)"/>
+          <ellipse cx="68" cy="86" rx="22" ry="7" fill="#5c3400" opacity=".5"/>
+          <rect x="46" y="60" width="44" height="26" rx="2" fill="url(#cg3r)"/>
+          <ellipse cx="68" cy="60" rx="22" ry="7" fill="url(#cgt3r)"/>
+          <ellipse cx="105" cy="92" rx="26" ry="10" fill="#3a2800" opacity=".7"/>
+          <path d="M82 60 Q79 92 105 92 Q131 92 128 60 Q120 44 105 44 Q90 44 82 60Z" fill="url(#bagg2)"/>
+          <path d="M97 44 Q105 38 113 44" stroke="#c87d0e" stroke-width="3" stroke-linecap="round" fill="none"/>
+          <ellipse cx="105" cy="44" rx="10" ry="4" fill="url(#bagknot2)"/>
+          <text x="105" y="78" font-size="18" text-anchor="middle" fill="rgba(255,220,80,.9)">$</text>
+          <ellipse cx="96" cy="60" rx="7" ry="10" fill="white" opacity=".12" transform="rotate(-15 96 60)"/>
+          <line x1="17" y1="66" x2="93" y2="66" stroke="#f0b429" stroke-width=".5" opacity=".3"/>
+          <line x1="17" y1="70" x2="93" y2="70" stroke="#f0b429" stroke-width=".5" opacity=".2"/>
+          <line x1="17" y1="74" x2="93" y2="74" stroke="#f0b429" stroke-width=".5" opacity=".15"/>
+          <defs>
+            <linearGradient id="cg1r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+            <linearGradient id="cgtr" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff5a0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="cg2r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffd84a"/><stop offset="100%" stop-color="#b06a00"/></linearGradient>
+            <linearGradient id="cgt2r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#e09a20"/></linearGradient>
+            <linearGradient id="cg3r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffed90"/><stop offset="100%" stop-color="#d48c10"/></linearGradient>
+            <linearGradient id="cgt3r" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#fff7b0"/><stop offset="100%" stop-color="#f0b429"/></linearGradient>
+            <linearGradient id="bagg2" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#f0b429"/><stop offset="50%" stop-color="#c87d0e"/><stop offset="100%" stop-color="#7a4a00"/></linearGradient>
+            <linearGradient id="bagknot2" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffe87c"/><stop offset="100%" stop-color="#c87d0e"/></linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="prize-label">🏆 Summer Prize Pool</div>
+      <div class="prize-amount">$500</div>
+      <div class="prize-sub">Winner takes all · Last team standing eats</div>
+    </div>
+
+    <div class="headline">
+      <h1>Scam <em>Wars</em></h1>
+      <p>June · July · August · 2025</p>
+    </div>
+
+    <div class="shame-wall">
+      <div class="shame-tape"><span class="shame-tape-inner">&nbsp;⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; ⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp;</span></div>
+      <div class="shame-body">
+        <span class="shame-siren">🚨</span>
+        <div class="shame-headline">PRINTING LESS THAN <em>KOKOT</em></div>
+        <div class="shame-sub">Official wall of shame · Wanted for financial crimes against themselves</div>
+        <div class="shame-perps">
+          <div class="perp" style="--tilt:-2deg">
+            <div class="perp-mug">🐺</div>
+            <div class="perp-name">Lazic</div>
+            <div class="perp-crime">Certified broke</div>
+          </div>
+          <div class="perp" style="--tilt:1.5deg">
+            <div class="perp-mug">🐉</div>
+            <div class="perp-name">Velja</div>
+            <div class="perp-crime">Dragon, no hoard</div>
+          </div>
+          <div class="perp" style="--tilt:-1.5deg">
+            <div class="perp-mug">🌊</div>
+            <div class="perp-name">Simela</div>
+            <div class="perp-crime">Cash flow: dry</div>
+          </div>
+          <div class="perp" style="--tilt:2deg">
+            <div class="perp-mug">💙</div>
+            <div class="perp-name">Injac</div>
+            <div class="perp-crime">Allergic to money</div>
+          </div>
+        </div>
+      </div>
+      <div class="shame-tape"><span class="shame-tape-inner">&nbsp;⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; ⚠ SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp; SHAME &nbsp;·&nbsp; SRAMOTA &nbsp;·&nbsp;</span></div>
+    </div>
+
+    <div class="podium" id="podium"></div>
+
+    <div class="progress-section">
+      <div class="progress-label" id="progress-labels"></div>
+      <div class="progress-track" id="progress-track"></div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <div class="chart-title">Monthly earnings by team</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-bar"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Cumulative race</div>
+        <div class="chart-canvas-wrap"><canvas id="chart-line"></canvas></div>
+      </div>
+    </div>
+
+    <div class="breakdown">
+      <div class="breakdown-title">Full Breakdown</div>
+      <div class="col-header">
+        <span></span><span>Player</span>
+        <span>June</span><span>July</span><span>Aug</span><span>Total</span>
+      </div>
+      <div id="breakdown-body"></div>
+    </div>
+  </div>
 </div>
+
+<!-- ═══ INPUT PAGE ═══ -->
+<div class="page" id="page-input">
+  <div class="input-wrap">
+    <div id="input-body"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<audio id="firstSound" src="first.mp3" preload="auto"></audio>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
 <script>
-const COLORS = ['#f0b429','#ffe87c','#ef5350','#42a5f5','#a78bfa','#66bb6a'];
-function confetti() {
-  const c = document.createElement('div');
-  c.className = 'confetti';
-  const s = 6 + Math.random() * 8;
-  c.style.cssText = `left:${Math.random()*100}vw;width:${s}px;height:${s*0.6}px;background:${COLORS[Math.floor(Math.random()*COLORS.length)]};animation-duration:${3+Math.random()*4}s`;
-  document.body.appendChild(c);
-  setTimeout(() => c.remove(), 8000);
+const JSONBIN_BIN_ID  = "6a18597521f9ee59d295b48b";
+const JSONBIN_API_KEY = "$2a$10$wUL5vHPci5ylelUPqniAi.03JVw.StV/nmHsQvIlSaWTCvi6L161e";
+const BIN_URL = "https://api.jsonbin.io/v3/b/" + JSONBIN_BIN_ID;
+const HDRS = { "Content-Type": "application/json", "X-Master-Key": JSONBIN_API_KEY };
+
+const IS_ADMIN = new URLSearchParams(location.search).get('admin') === '80831';
+if (IS_ADMIN) document.getElementById('tab-input').style.display = '';
+
+const MONTHS = ['June', 'July', 'Aug'];
+const PALETTE = ['#ef5350','#f0b429','#42a5f5','#66bb6a','#ab47bc','#ff7043','#26c6da','#ec407a'];
+const EMOJIS = ['🦊','🐯','🦁','🐸','🦈','🦅','🐍','🐙','🦉','🐢','🐺','🐉','🌊','💙','👑','🤴'];
+
+let teams = [
+  { id:'A', name:'Velja & Injac',  color:'#ef5350', members:[
+    {id:'velja',name:'Velja',emoji:'🐉'},
+    {id:'injac',name:'Injac',emoji:'💙'}
+  ]},
+  { id:'B', name:'Dusan & David',  color:'#f0b429', members:[
+    {id:'dusan',name:'Dusan',emoji:'👑'},
+    {id:'david',name:'David',emoji:'🤴'}
+  ]},
+  { id:'C', name:'Lazic & Simela', color:'#42a5f5', members:[
+    {id:'lazic',name:'Lazic',emoji:'🐺'},
+    {id:'simela',name:'Simela',emoji:'🌊'}
+  ]},
+];
+let data = {};
+function ensureScores() {
+  teams.forEach(t => t.members.forEach(m => { if (!Array.isArray(data[m.id])) data[m.id] = [0,0,0]; }));
 }
-setInterval(confetti, 120);
+ensureScores();
+
+let currentLeader = null, activeInput = null, saveTimer = null, structSig = '';
+const uid = () => 'x' + Math.random().toString(36).slice(2, 9);
+const team = id => teams.find(t => t.id === id);
+const teamEmoji = t => t.members.map(m => m.emoji).join('') || '❓';
+
+const TAGS = {
+  lead: ['Leading the pack', 'On top right now', 'Setting the pace', 'Ahead of the curve'],
+  lose: ['Chasing the leaders', 'Room to grow', 'Still in the game', 'Building momentum'],
+  tie:  ['All tied up', 'Neck and neck'],
+};
+
+// ── sync indicator
+function setSync(state) {
+  document.getElementById('sync-dot').className = 'sync-dot ' + state;
+}
+
+// ── cloud
+async function cloudLoad() {
+  try {
+    const r = await fetch(BIN_URL + "/latest", { headers: HDRS });
+    if (!r.ok) throw 0;
+    const rec = (await r.json()).record || {};
+    const el = document.activeElement;
+    const editing = el && (el.tagName === 'INPUT' || el.tagName === 'SELECT');
+    if (!editing) {
+      if (Array.isArray(rec.teams) && rec.teams.length) {
+        teams = rec.teams;
+        data = rec.scores || {};
+      } else {
+        // legacy flat record
+        Object.keys(data).forEach(id => { if (Array.isArray(rec[id])) data[id] = rec[id]; });
+      }
+      ensureScores();
+      maybeRebuildInputs();
+      render();
+    }
+    setSync('ok');
+  } catch(e) { setSync('err'); }
+}
+async function cloudSave() {
+  setSync('saving');
+  try {
+    const r = await fetch(BIN_URL, { method:'PUT', headers:HDRS, body:JSON.stringify({ teams, scores: data }) });
+    if (!r.ok) throw 0;
+    setSync('ok');
+  } catch(e) { setSync('err'); }
+}
+function queueSave() { clearTimeout(saveTimer); saveTimer = setTimeout(cloudSave, 700); }
+
+// ── formatting
+const fmt   = n => '$' + Math.round(n || 0).toLocaleString('en-US');
+const fmtPc = n => Math.round(n) + '%';
+const memberTotal = id => (data[id] || [0,0,0]).reduce((a, b) => a + (+b || 0), 0);
+const teamTotal   = t  => t.members.reduce((s, m) => s + memberTotal(m.id), 0);
+const getTeamMonthly = t => [0,1,2].map(i => t.members.reduce((s, m) => s + (+(data[m.id]||[])[i] || 0), 0));
+
+// ── tabs
+function switchTab(tab) {
+  document.getElementById('page-display').classList.toggle('active', tab === 'display');
+  document.getElementById('page-input').classList.toggle('active', tab === 'input');
+  document.getElementById('tab-display').classList.toggle('active', tab === 'display');
+  document.getElementById('tab-input').classList.toggle('active', tab === 'input');
+}
+
+// ── team / member management
+function structureChanged() { buildInputPage(); render(); queueSave(); }
+function addTeam() {
+  const color = PALETTE.find(c => !teams.some(t => t.color === c)) || PALETTE[teams.length % PALETTE.length];
+  teams.push({ id: uid(), name: 'New Team', color, members: [] });
+  structureChanged();
+}
+function removeTeam(tid) {
+  const t = team(tid); if (!t) return;
+  if (!confirm('Remove team "' + t.name + '" and all its numbers?')) return;
+  t.members.forEach(m => delete data[m.id]);
+  teams = teams.filter(x => x.id !== tid);
+  currentLeader = null;
+  structureChanged();
+}
+function renameTeam(tid, v) { const t = team(tid); if (t) { t.name = v; render(); queueSave(); } }
+function addMember(tid) {
+  const t = team(tid); if (!t) return;
+  const used = teams.flatMap(x => x.members.map(m => m.emoji));
+  const pool = EMOJIS.filter(e => !used.includes(e));
+  t.members.push({ id: uid(), name: 'New Player', emoji: (pool.length ? pool : EMOJIS)[Math.floor(Math.random() * (pool.length ? pool.length : EMOJIS.length))] });
+  ensureScores();
+  structureChanged();
+}
+function removeMember(tid, mid) {
+  const t = team(tid); if (!t) return;
+  const m = t.members.find(x => x.id === mid);
+  if (!confirm('Remove ' + (m ? m.name : 'player') + '?')) return;
+  t.members = t.members.filter(x => x.id !== mid);
+  delete data[mid];
+  structureChanged();
+}
+function renameMember(mid, v) {
+  for (const t of teams) { const m = t.members.find(x => x.id === mid); if (m) { m.name = v; render(); queueSave(); return; } }
+}
+function moveMember(tid, mid, destId) {
+  if (destId === tid) return;
+  const src = team(tid), dst = team(destId); if (!src || !dst) return;
+  const m = src.members.find(x => x.id === mid); if (!m) return;
+  src.members = src.members.filter(x => x.id !== mid);
+  dst.members.push(m);
+  structureChanged();
+}
+
+// ── build input page
+function buildInputPage() {
+  structSig = JSON.stringify(teams.map(t => [t.id, t.name, t.color, t.members]));
+  const wrap = document.getElementById('input-body');
+  wrap.innerHTML = '';
+  teams.forEach(t => {
+    const sec = document.createElement('div'); sec.className = 'input-section';
+    const head = document.createElement('div'); head.className = 'team-head';
+    head.innerHTML = `
+      <div class="dot" style="background:${t.color}"></div>
+      <input class="name-input" value="${t.name.replace(/"/g,'&quot;')}" oninput="renameTeam('${t.id}', this.value)" title="Team name">
+      <button class="mini-btn" onclick="addMember('${t.id}')">+ Player</button>
+      <button class="mini-btn danger" onclick="removeTeam('${t.id}')">✕ Remove team</button>`;
+    sec.appendChild(head);
+
+    if (t.members.length) {
+      const tcard = document.createElement('div'); tcard.className = 'input-card';
+      tcard.style.borderStyle = 'dashed';
+      tcard.innerHTML = `
+        <div class="input-card-left">
+          <span class="input-card-emoji">Σ</span>
+          <div>
+            <div class="input-card-name">Team total</div>
+            <div class="input-card-subtotal" id="sub-team-${t.id}">${fmt(teamTotal(t))}</div>
+          </div>
+        </div>
+        <div class="input-months">
+          ${MONTHS.map((mo, i) => `
+            <div class="input-month">
+              <label>${mo}</label>
+              <input type="number" inputmode="decimal" placeholder="0"
+                id="in-team-${t.id}-${i}" value="${getTeamMonthly(t)[i] || ''}"
+                onfocus="activeInput='team-${t.id}-${i}'" onblur="activeInput=null"
+                oninput="editTeam('${t.id}',${i},this.value)">
+            </div>`).join('')}
+        </div>`;
+      sec.appendChild(tcard);
+    }
+
+    t.members.forEach(m => {
+      const card = document.createElement('div'); card.className = 'input-card';
+      card.innerHTML = `
+        <div class="input-card-left">
+          <span class="input-card-emoji">${m.emoji}</span>
+          <div>
+            <input class="name-input" style="width:110px" value="${m.name.replace(/"/g,'&quot;')}" oninput="renameMember('${m.id}', this.value)" title="Player name">
+            <div class="input-card-subtotal" id="sub-${m.id}">${fmt(memberTotal(m.id))}</div>
+            <div class="member-controls">
+              <select class="member-select" onchange="moveMember('${t.id}','${m.id}',this.value)" title="Move to team">
+                ${teams.map(x => `<option value="${x.id}" ${x.id===t.id?'selected':''}>${x.name.replace(/</g,'&lt;')}</option>`).join('')}
+              </select>
+              <button class="mini-btn danger" onclick="removeMember('${t.id}','${m.id}')">✕</button>
+            </div>
+          </div>
+        </div>
+        <div class="input-months">
+          ${MONTHS.map((mo, i) => `
+            <div class="input-month">
+              <label>${mo}</label>
+              <input type="number" inputmode="decimal" placeholder="0"
+                id="in-${m.id}-${i}" value="${data[m.id][i] || ''}"
+                onfocus="activeInput='${m.id}-${i}'" onblur="activeInput=null"
+                oninput="edit('${m.id}',${i},this.value)">
+            </div>`).join('')}
+        </div>`;
+      sec.appendChild(card);
+    });
+    wrap.appendChild(sec);
+  });
+  const add = document.createElement('button');
+  add.className = 'add-team-btn';
+  add.textContent = '+ Create new team';
+  add.onclick = addTeam;
+  wrap.appendChild(add);
+}
+
+function maybeRebuildInputs() {
+  const sig = JSON.stringify(teams.map(t => [t.id, t.name, t.color, t.members]));
+  if (sig !== structSig) buildInputPage(); else refreshInputs();
+}
+
+function refreshInputs() {
+  teams.forEach(t => {
+    t.members.forEach(m => {
+      for (let i = 0; i < 3; i++) {
+        const el = document.getElementById('in-' + m.id + '-' + i);
+        if (el && activeInput !== m.id + '-' + i) el.value = data[m.id][i] || '';
+      }
+      const sub = document.getElementById('sub-' + m.id);
+      if (sub) sub.textContent = fmt(memberTotal(m.id));
+    });
+    const mo = getTeamMonthly(t);
+    for (let i = 0; i < 3; i++) {
+      const el = document.getElementById('in-team-' + t.id + '-' + i);
+      if (el && activeInput !== 'team-' + t.id + '-' + i) el.value = mo[i] || '';
+    }
+    const tsub = document.getElementById('sub-team-' + t.id);
+    if (tsub) tsub.textContent = fmt(teamTotal(t));
+  });
+}
+
+function edit(id, i, v) {
+  data[id][i] = v === '' ? 0 : Math.max(0, +v);
+  const sub = document.getElementById('sub-' + id);
+  if (sub) sub.textContent = fmt(memberTotal(id));
+  const t = teams.find(x => x.members.some(m => m.id === id));
+  if (t) {
+    const tEl = document.getElementById('in-team-' + t.id + '-' + i);
+    if (tEl) tEl.value = getTeamMonthly(t)[i] || '';
+    const tsub = document.getElementById('sub-team-' + t.id);
+    if (tsub) tsub.textContent = fmt(teamTotal(t));
+  }
+  render(); queueSave();
+}
+
+function editTeam(tid, i, v) {
+  const t = team(tid); if (!t || !t.members.length) return;
+  const total = v === '' ? 0 : Math.max(0, +v);
+  const share = total / t.members.length;
+  t.members.forEach(m => { data[m.id][i] = share; });
+  t.members.forEach(m => {
+    for (let k = 0; k < 3; k++) {
+      const el = document.getElementById('in-' + m.id + '-' + k);
+      if (el) el.value = data[m.id][k] || '';
+    }
+    const sub = document.getElementById('sub-' + m.id);
+    if (sub) sub.textContent = fmt(memberTotal(m.id));
+  });
+  const tsub = document.getElementById('sub-team-' + tid);
+  if (tsub) tsub.textContent = fmt(teamTotal(t));
+  render(); queueSave();
+}
+
+// ── toast
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// ── sound
+function playFirstSting() {
+  const a = document.getElementById('firstSound');
+  if (!a) return;
+  try { a.currentTime = 0; a.volume = 0.7; a.play().catch(()=>{}); } catch(e){}
+}
+
+// ── charts
+const CHART_OPTS_BASE = {
+  responsive: true, maintainAspectRatio: false,
+  plugins: {
+    legend: { display: true, position: 'bottom', labels: { color:'#6b6e77', font:{size:11,family:'DM Sans,system-ui,sans-serif'}, boxWidth:10, boxHeight:10, padding:14, usePointStyle:true } },
+    tooltip: { backgroundColor:'#1e2024', borderColor:'rgba(255,255,255,.1)', borderWidth:1, titleColor:'#f0f0f0', bodyColor:'#9ca3af', padding:10,
+      callbacks: { label: ctx => ' '+ctx.dataset.label+': $'+Math.round(ctx.parsed.y).toLocaleString('en-US') } }
+  },
+  scales: {
+    x: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6b6e77', font:{size:11} } },
+    y: { grid:{ color:'rgba(255,255,255,.05)' }, ticks:{ color:'#6b6e77', font:{size:11}, callback: v => '$'+Math.round(v).toLocaleString('en-US') }, beginAtZero:true }
+  }
+};
+
+let barChart = null, lineChart = null;
+
+function updateBarChart() {
+  const datasets = teams.map(t => ({
+    label: t.name, data: getTeamMonthly(t),
+    backgroundColor: t.color+'44', borderColor: t.color,
+    borderWidth:2, borderRadius:6, borderSkipped:false,
+  }));
+  if (barChart && barChart.data.datasets.length === datasets.length) {
+    barChart.data.datasets.forEach((d,i) => Object.assign(d, datasets[i]));
+    barChart.update(); return;
+  }
+  if (barChart) { barChart.destroy(); barChart = null; }
+  const ctx = document.getElementById('chart-bar').getContext('2d');
+  barChart = new Chart(ctx, { type:'bar', data:{ labels:MONTHS, datasets }, options: JSON.parse(JSON.stringify(CHART_OPTS_BASE)) });
+}
+
+function updateLineChart() {
+  const datasets = teams.map(t => {
+    let cum = 0;
+    const cumData = getTeamMonthly(t).map(v => (cum += v));
+    return { label:t.name, data:cumData, borderColor:t.color, backgroundColor:t.color+'22',
+      borderWidth:2.5, pointRadius:5, pointBackgroundColor:t.color,
+      pointBorderColor:'#0e0f11', pointBorderWidth:2, fill:true, tension:.35 };
+  });
+  if (lineChart && lineChart.data.datasets.length === datasets.length) {
+    lineChart.data.datasets.forEach((d,i) => Object.assign(d, datasets[i]));
+    lineChart.update(); return;
+  }
+  if (lineChart) { lineChart.destroy(); lineChart = null; }
+  const ctx = document.getElementById('chart-line').getContext('2d');
+  lineChart = new Chart(ctx, { type:'line', data:{ labels:MONTHS, datasets }, options: JSON.parse(JSON.stringify(CHART_OPTS_BASE)) });
+}
+
+// ── render display page
+let flashSide = null;
+function render() {
+  const totals = {};
+  teams.forEach(t => totals[t.id] = teamTotal(t));
+  const sum = teams.reduce((s, t) => s + totals[t.id], 0);
+
+  // progress bar
+  const labels = document.getElementById('progress-labels');
+  const track = document.getElementById('progress-track');
+  labels.innerHTML = ''; track.innerHTML = '';
+  teams.forEach(t => {
+    const pc = sum ? totals[t.id] / sum * 100 : 100 / (teams.length || 1);
+    const lbl = document.createElement('span');
+    lbl.style.color = t.color;
+    lbl.textContent = t.name + ' — ' + fmtPc(pc);
+    labels.appendChild(lbl);
+    const seg = document.createElement('div');
+    seg.className = 'seg';
+    seg.style.background = t.color;
+    seg.style.width = pc + '%';
+    track.appendChild(seg);
+  });
+
+  // leader
+  const maxVal = Math.max(0, ...teams.map(t => totals[t.id]));
+  let leader = null;
+  if (sum > 0) {
+    const tops = teams.filter(t => totals[t.id] === maxVal);
+    if (tops.length === 1) leader = tops[0].id;
+  }
+  if (leader && leader !== currentLeader) {
+    const wasNull = currentLeader === null;
+    currentLeader = leader;
+    if (!wasNull) {
+      playFirstSting();
+      showToast('👑 ' + team(leader).name + ' takes the lead');
+      flashSide = leader;
+      setTimeout(() => { flashSide = null; buildPodium(totals, leader); }, 600);
+    }
+  } else if (!leader) { currentLeader = null; }
+
+  buildPodium(totals, leader);
+  buildBreakdown(totals);
+  updateBarChart();
+  updateLineChart();
+}
+
+function buildPodium(totals, leader) {
+  const wrap = document.getElementById('podium');
+  wrap.innerHTML = '';
+  wrap.style.gridTemplateColumns = 'repeat(' + Math.max(teams.length, 1) + ', 1fr)';
+  teams.forEach(t => {
+    const isLead = leader === t.id;
+    const total = totals[t.id];
+    const sum = teams.reduce((s, x) => s + totals[x.id], 0);
+    let tag = '';
+    if (sum === 0) tag = '—';
+    else if (!leader) tag = TAGS.tie[0];
+    else tag = isLead ? TAGS.lead[total % TAGS.lead.length] : TAGS.lose[Math.round(total) % TAGS.lose.length];
+
+    const div = document.createElement('div');
+    div.className = 'pod' + (isLead ? ' lead' : '') + (flashSide === t.id ? ' pop' : '');
+    if (isLead) {
+      div.style.borderColor = t.color;
+      div.style.boxShadow = '0 12px 40px ' + t.color + '33';
+      div.style.background = 'linear-gradient(0deg, ' + t.color + '1f, ' + t.color + '1f), var(--surf)';
+    }
+    div.innerHTML = `
+      <div class="pod-crown">${isLead ? '👑' : ''}</div>
+      <div class="pod-emoji">${teamEmoji(t)}</div>
+      <div class="pod-name">${t.name}</div>
+      <div class="pod-amount" style="color:${t.color}">${fmt(total)}</div>
+      <div class="pod-tag">${tag}</div>`;
+    wrap.appendChild(div);
+  });
+}
+
+function buildBreakdown(totals) {
+  const body = document.getElementById('breakdown-body'); body.innerHTML = '';
+  teams.forEach(t => {
+    const tr = document.createElement('div');
+    tr.className = 'brow team-row';
+    tr.innerHTML = `
+      <div class="brow-emoji">${teamEmoji(t)}</div>
+      <div class="brow-name">${t.name}</div>
+      <div class="brow-mo"></div><div class="brow-mo"></div><div class="brow-mo"></div>
+      <div class="brow-total" style="color:${t.color}">${fmt(totals[t.id])}</div>`;
+    body.appendChild(tr);
+
+    t.members.forEach(m => {
+      const vals = data[m.id] || [0,0,0];
+      const row = document.createElement('div');
+      row.className = 'brow';
+      row.innerHTML = `
+        <div class="brow-emoji">${m.emoji}</div>
+        <div class="brow-name">${m.name}</div>
+        ${vals.map(v => `<div class="brow-mo ${+v ? 'has-val' : ''}">${+v ? fmt(+v) : '—'}</div>`).join('')}
+        <div class="brow-total" style="color:${t.color}">${fmt(memberTotal(m.id))}</div>`;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── prize pool sparkles
+function spawnSparkle() {
+  const pool = document.getElementById('prize-pool');
+  if (!pool) return;
+  const s = document.createElement('div');
+  s.className = 'sparkle';
+  const size = 3 + Math.random() * 6;
+  s.style.cssText = `width:${size}px;height:${size}px;left:${10+Math.random()*80}%;bottom:${10+Math.random()*40}%;animation-duration:${1.8+Math.random()*2.2}s`;
+  pool.appendChild(s);
+  setTimeout(() => s.remove(), 4000);
+}
+setInterval(spawnSparkle, 300);
+
+// ── init
+buildInputPage();
+render();
+cloudLoad();
+setInterval(cloudLoad, 5000);
 </script>
 </body>
 </html>
